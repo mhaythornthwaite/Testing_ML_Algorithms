@@ -25,7 +25,7 @@ pd.set_option('display.width', 1000)
 print('\n--------------------- 1. DATA PREPARATION ------------------------\n')
 
 
-heart_disease = pd.read_csv(r'C:\Users\mhayt\Documents\Software_Developer-Python\2_Machine_Learning_ZTM_Course\raw-zero-to-mastery-ml-master\data\heart-disease.csv')
+heart_disease = pd.read_csv('data\heart-disease.csv')
 
 print(heart_disease.head(), '\n')
 
@@ -92,7 +92,7 @@ print('\n-------------------- 5. MODEL IMPROVEMENTS -----------------------\n')
 
 #try different amount of n_estimators
 
-x_t = range(10, 100, 10)
+x_t = range(20, 200, 20)
 y_t = []
 for i in x_t:
     clf_t = RandomForestClassifier(n_estimators=i)
@@ -103,10 +103,15 @@ for i in x_t:
     
 fig, ax = plt.subplots()
 ax.plot(x_t, y_t)
+
 ax.set(xlabel='N_Estimator',
        ylabel='Test Data Accuracy')
+ax.set_axisbelow(True)
+ax.grid(color='xkcd:light grey')
 
+fig.suptitle('Hyperparameter Testing - N Estimators', y=0.96, fontsize=14, fontweight='bold');
 
+fig.savefig('figures\Hyperparameter_Testing_N_Estimators.png')
 
 
 #------------------------------------------------------------------------------
