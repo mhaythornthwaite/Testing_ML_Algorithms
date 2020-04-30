@@ -15,6 +15,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import pickle
+from matplotlib.colors import ListedColormap
 
 plt.close('all')
 pd.set_option('display.max_columns', 20)
@@ -132,7 +133,80 @@ print('Loaded Model Score:', round((loaded_model.score(x_test, y_test) * 100), 2
 #------------------------------- 7. FINISHING UP ------------------------------
 print('\n----------------------- 7. FINISHING UP --------------------------\n')
 
+#here we are going to make some assumptions about x and only vary thalach and age to try and visualise the ml model. The other 13 features we are going to set at the average.
 
+thalach_range = range(60, 210, 2)
+age_range = range(50, 85, 1)
+
+thalach_gen = []
+age_gen = []
+
+for t in thalach_range:
+    for a in age_range:
+        thalach_gen.append(t)
+        age_gen.append(a)
+
+#setting up the synthetic dataframe
+x_gen = pd.DataFrame({})  
+x_gen['age'] = age_gen
+x_gen['sex'] = 1
+x_gen['cp'] = 1
+x_gen['trestbps'] = 135
+x_gen['chol'] = 322
+x_gen['fbs'] = 0
+x_gen['restecq'] = 1
+x_gen['thalach'] = thalach_gen
+x_gen['exanq'] = 0
+x_gen['oldpeak'] = 1.4
+x_gen['slope'] = 1
+x_gen['ca'] = 0
+x_gen['thal'] = 2
+
+#making predictions on the synthetic dataframe
+y_gen_pred = clf.predict(x_gen)
+
+#reshaping the predictions and the x and y axis to fit with a contour plot.
+y_gen_pred_reshape = np.array(y_gen_pred).reshape(75,35)
+age_gen_reshape = np.array(age_gen).reshape(75,35)
+thalach_gen_reshape = np.array(thalach_gen).reshape(75,35)
+
+#generating data for plotting
+heart_disease = pd.read_csv('data\heart-disease.csv')
+heart_disease_o50 = heart_disease[heart_disease['age'] > 50]
+
+#instantiating and titiling the figure
+fig, ax1 = plt.subplots(figsize=(10,7))
+fig.suptitle('Heart Disease Analysis', y=0.92, fontsize=16, fontweight='bold');
+
+#defining colour tables
+cm = plt.cm.RdBu
+cm_bright = ListedColormap(['#FF0000', '#0000FF'])
+
+#plotting the contour plot
+cont1 = ax1.contourf(age_gen_reshape, thalach_gen_reshape, y_gen_pred_reshape, cmap=cm, alpha=.8)
+
+#plotting the entire dataset - training and test data. 
+scat1 = ax1.scatter(heart_disease_o50['age'], 
+                   heart_disease_o50['thalach'], 
+                   c=heart_disease_o50['target'],
+                   cmap=cm_bright,
+                   edgecolors='k');
+
+#setting axis and legend
+ax1.set(ylabel='thalach',
+        xlabel='age',
+        xlim=(50,80),
+        ylim=(60,200));
+ax1.legend(*scat1.legend_elements(), title='Target');
+ax1.set_axisbelow(True)
+ax1.grid(color='xkcd:light grey')
+
+#adding average thalach line
+ax1.axhline(heart_disease_o50['thalach'].mean(), c='r', linestyle='--', linewidth=1);
+ax1.text(73.3,146,'Average max heart rate')
+
+#saving figure
+fig.savefig('figures\heart_disease_analysis_ml_overlay.png')
 
 
 # ----------------------------------- END -------------------------------------

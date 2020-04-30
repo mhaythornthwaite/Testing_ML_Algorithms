@@ -66,3 +66,6 @@ ax2.text(74.4,260,'Average cholesterol');
 fig.savefig('figures\heart_disease_analysis.png')
 
 
+
+
+
