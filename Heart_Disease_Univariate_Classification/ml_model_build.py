@@ -16,6 +16,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pickle
 from matplotlib.colors import ListedColormap
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
 
 plt.close('all')
 pd.set_option('display.max_columns', 20)
@@ -36,25 +38,21 @@ print(x[:2], '\n')
 y = heart_disease['target']
 print(y[:2], '\n')
 
+#split into training data and test data
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2)
 
 
 #------------------------------------------------------------------------------
 print('\n-------------------- 2. ALGORITHM SELECTION ----------------------\n')
 
-from sklearn.ensemble import RandomForestClassifier
 
-#instantiate the random forest classclass
+#instantiate the random forest class
 clf = RandomForestClassifier()
-print(clf.get_params())
-
 
 
 #------------------------------------------------------------------------------
 print('\n----------------------- 3. FIT THE MODEL -------------------------\n')
 
-#split into training data and test data
-from sklearn.model_selection import train_test_split
-x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2)
 
 #train the model
 clf.fit(x_train, y_train)
@@ -74,17 +72,32 @@ y_pred = clf.predict(x_test)
 #------------------------------------------------------------------------------
 print('\n--------------------- 4. MODEL EVALUATION ------------------------\n')
 
-#training data
-print(clf.score(x_train, y_train))
+from sklearn.metrics import classification_report, confusion_matrix
+from sklearn.model_selection import cross_val_score
+from sklearn.metrics import roc_curve, roc_auc_score
 
-#test data
-print(clf.score(x_test, y_test))
+#accuracy of model on training and test data
+print('Accuracy on training data: ', round(clf.score(x_train, y_train)*100, 1), '%')
+print('Accuracy on test data: ',round(clf.score(x_test, y_test)*100, 1), '%')
 
-from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
 
-print('Classification Report \n', classification_report(y_test, y_pred), '\n')
+#--- alternative model evaluation metrics ---
+
+#this is still accuracy but now averaged over our 5 cross-validation model instances
+cv_score = cross_val_score(clf, x, y, cv=5)
+cv_score_av = round(np.mean(cv_score)*100,1)
+print('Cross-Validation Accuracy Score: ', cv_score_av, '%\n')
+
+
+#Confusion matrix - this gives us [[true positives, false positives], [false negatives, true negatives]]
 print('Confusion Matrix \n', confusion_matrix(y_test, y_pred), '\n')
-print('Accuracy Score \n', accuracy_score(y_test, y_pred), '\n')
+
+
+#area under receiver operating curve (ROC/AUC)
+
+
+#classification report
+print('Classification Report \n', classification_report(y_test, y_pred), '\n')
 
 
 
