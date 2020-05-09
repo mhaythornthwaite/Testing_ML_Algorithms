@@ -155,33 +155,42 @@ def pred_proba_plot(clf, x, y, cv, no_iter, no_bins):
 
 #----- CONFUSION MATRIX -----
 
-#this gives us [[true positives, false positives], [false negatives, true negatives]]
+#this gives us [[true positives, false negatives], [false positives, true negatives]]
 print('Confusion Matrix \n', confusion_matrix(y_test, y_pred), '\n')
 fig = plot_confusion_matrix(clf, x_test, y_test, cmap=plt.cm.Blues, display_labels=('Has HD', 'No HD'))
 fig.ax_.set_title('Heart Disease Classification Confusion Matrix')
 plt.savefig('figures\confusion_matrix.png')
 
 
-#----- RECEIVER OPERATING CURVE (ROC & AUC) -----
+#----- RECEIVER OPERATING CHARACTERISTIC (ROC & AUC) -----
 
-#description
+#tpr = sum(true positives) / sum(true positives + false negatives) this is what proportion of patients with HD were correctly identified. 
+#fpr = 1 - (sum(true negatives) / sum(true negatives + false positives)) this is what proportion of patients without HD were correctly identified.
+
+#as an example, if it is very important to not classify someone without HD as with HD (i.e avoid a false positive) because unneccesary medical treatment would cause harm, we could change the classification threshold from 50% to say 80% or 90%. To find and visualise the optimal threshold we use an ROC curve. Here we test every threshold and plot a single point of tpr vs fpr for each. In the above example, as soon as the fpr strays away from 0, we have begun to classify patients as with HD when they do not. Therefore we would read off the 'prediction threshold' for the value with the highest trp with fpr = 0
+
 y_pred_proba = clf.predict_proba(x_test)
 y_pred_proba_positive = y_pred_proba[:, 1]
 
 fpr, tpr, thresholds = roc_curve(y_test, y_pred_proba_positive)
+thresholds[0] = 1
 
 def plot_roc_curve(fpr, trp):
     fig, ax = plt.subplots()
     fig.suptitle('Receiver Operating Characteristic Curve (ROC)', y=0.96, fontsize=16, fontweight='bold');
-    ax.plot(fpr, trp, color='green', label='ROC')
-    ax.plot([0,1], [0,1], color='red', linestyle='--', label='tpr=fpr')
+    ax.plot(fpr, trp, color='green', label='ROC', zorder = 5)
+    ax.plot([0,1], [0,1], color='red', linestyle='--', label='tpr=fpr', zorder = 0)
+    scat = ax.scatter(fpr, trp, c=thresholds, cmap='jet', zorder=10)
     ax.legend(loc=4)
+    cbar = fig.colorbar(scat)
+    cbar.ax.set_ylabel('Prediction Threshold', rotation=-90, va="bottom")
     ax.set(ylabel='True Positive Rate (TPR)',
            xlabel='False Positive Rate (FPR)')
     return fig
 
 fig = plot_roc_curve(fpr, tpr)   
 fig.savefig('figures\ROC_curve.png')
+
 
 #----- CLASSIFICATION REPORT -----
 
