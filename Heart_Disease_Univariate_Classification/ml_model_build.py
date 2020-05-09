@@ -165,7 +165,23 @@ plt.savefig('figures\confusion_matrix.png')
 #----- RECEIVER OPERATING CURVE (ROC & AUC) -----
 
 #description
+y_pred_proba = clf.predict_proba(x_test)
+y_pred_proba_positive = y_pred_proba[:, 1]
 
+fpr, tpr, thresholds = roc_curve(y_test, y_pred_proba_positive)
+
+def plot_roc_curve(fpr, trp):
+    fig, ax = plt.subplots()
+    fig.suptitle('Receiver Operating Characteristic Curve (ROC)', y=0.96, fontsize=16, fontweight='bold');
+    ax.plot(fpr, trp, color='green', label='ROC')
+    ax.plot([0,1], [0,1], color='red', linestyle='--', label='tpr=fpr')
+    ax.legend(loc=4)
+    ax.set(ylabel='True Positive Rate (TPR)',
+           xlabel='False Positive Rate (FPR)')
+    return fig
+
+fig = plot_roc_curve(fpr, tpr)   
+fig.savefig('figures\ROC_curve.png')
 
 #----- CLASSIFICATION REPORT -----
 
