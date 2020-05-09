@@ -121,11 +121,45 @@ ax.set(ylabel='Number of Occurences',
 fig.savefig('figures\prediction_probability.png')
 
 
+#Replicating the above figure but iteratively repeating until the result stabalises.
+def pred_proba_plot(clf, x, y, cv, no_iter, no_bins):
+    y_dup = []
+    correct_guess_pred = []
+    incorrect_guess_pred = []
+    for i in range(no_iter):
+        if i % 2 == 0:
+            print(f'completed {i} iterations')
+        y_pred_cv = cross_val_predict(clf, x, y, cv=cv)
+        y_pred_proba_cv = cross_val_predict(clf, x, y, cv=cv, method='predict_proba')
+        y_dup.append(list(y))
+        for i in range(len(y_pred_cv)):
+            if y_pred_cv[i] == list(y)[i]:
+                correct_guess_pred.append(max(y_pred_proba_cv[i]))
+            if y_pred_cv[i] != list(y)[i]:
+                incorrect_guess_pred.append(max(y_pred_proba_cv[i]))
+                
+    bins = np.linspace(0.5,1,no_bins)
+    fig, ax = plt.subplots()
+    ax.hist(incorrect_guess_pred, bins, alpha=0.5, edgecolor='#1E212A', color='red', label='Incorrect Prediction')
+    ax.hist(correct_guess_pred, bins, alpha=0.5, edgecolor='#1E212A', color='green', label='Correct Prediction')
+    ax.legend()
+    fig.suptitle(f'Prediction Probability - Iterated {no_iter} Times', y=0.96, fontsize=16, fontweight='bold');
+    ax.set(ylabel='Number of Occurences',
+            xlabel='Prediction Probability')
+    return fig
+
+
+#fig = pred_proba_plot(clf, x, y, 5, 50, 25)
+#fig.savefig('figures\prediction_probability_50.png')
+
+
 #----- CONFUSION MATRIX -----
 
 #this gives us [[true positives, false positives], [false negatives, true negatives]]
 print('Confusion Matrix \n', confusion_matrix(y_test, y_pred), '\n')
-plot_confusion_matrix(clf, x_test, y_test, cmap=plt.cm.Blues)
+fig = plot_confusion_matrix(clf, x_test, y_test, cmap=plt.cm.Blues, display_labels=('Has HD', 'No HD'))
+fig.ax_.set_title('Heart Disease Classification Confusion Matrix')
+plt.savefig('figures\confusion_matrix.png')
 
 
 #----- RECEIVER OPERATING CURVE (ROC & AUC) -----
