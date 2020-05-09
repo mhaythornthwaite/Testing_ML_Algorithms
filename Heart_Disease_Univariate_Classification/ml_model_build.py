@@ -64,24 +64,25 @@ print(t)
 t_pred = clf.predict(t)
 print('does the dummy data have heart disease:', t_pred)
 
-#making predictions on the test dataset
-y_pred = clf.predict(x_test)
-
 
 
 #------------------------------------------------------------------------------
 print('\n--------------------- 4. MODEL EVALUATION ------------------------\n')
 
 from sklearn.metrics import classification_report, confusion_matrix
-from sklearn.model_selection import cross_val_score
+from sklearn.model_selection import cross_val_score, cross_val_predict
+from sklearn.model_selection import StratifiedKFold
 from sklearn.metrics import roc_curve, roc_auc_score
+from sklearn.metrics import plot_confusion_matrix
 
 #accuracy of model on training and test data
 print('Accuracy on training data: ', round(clf.score(x_train, y_train)*100, 1), '%')
 print('Accuracy on test data: ',round(clf.score(x_test, y_test)*100, 1), '%')
 
 
-#--- alternative model evaluation metrics ---
+#---------- ALTERNATIVE MODEL EVALUATION METRICS ----------
+
+#----- CROSS-VALIDATION -----
 
 #this is still accuracy but now averaged over our 5 cross-validation model instances
 cv_score = cross_val_score(clf, x, y, cv=5)
@@ -89,14 +90,52 @@ cv_score_av = round(np.mean(cv_score)*100,1)
 print('Cross-Validation Accuracy Score: ', cv_score_av, '%\n')
 
 
-#Confusion matrix - this gives us [[true positives, false positives], [false negatives, true negatives]]
+#----- PREDICTION PROBABILITY -----
+
+#making our prediction and our probability arrays with standard test splits
+y_pred = clf.predict(x_test)
+y_pred_proba = clf.predict_proba(x_test)
+
+#making our prediction and our probability arrays with cross validation
+y_pred_cv = cross_val_predict(clf, x, y, cv=5)
+y_pred_proba_cv = cross_val_predict(clf, x, y, cv=5, method='predict_proba')
+
+#creating a list with all the probabilities of the correctly guessed instances and a separate list with the probabilities of all the incorrectly guessed instances.
+correct_guess_pred = []
+incorrect_guess_pred = []
+for i in range(len(y_pred_cv)):
+    if y_pred_cv[i] == list(y)[i]:
+        correct_guess_pred.append(max(y_pred_proba_cv[i]))
+    if y_pred_cv[i] != list(y)[i]:
+        incorrect_guess_pred.append(max(y_pred_proba_cv[i]))
+
+#plotting this data on a histogram - this will help show us the reliability of a predicted class given the probability (similar to an ROC curve will)
+bins = np.linspace(0.5,1,20)
+fig, ax = plt.subplots()
+ax.hist(incorrect_guess_pred, bins, alpha=0.5, edgecolor='#1E212A', color='red', label='Incorrect Prediction')
+ax.hist(correct_guess_pred, bins, alpha=0.5, edgecolor='#1E212A', color='green', label='Correct Prediction')
+ax.legend()
+fig.suptitle('Prediction Probability', y=0.96, fontsize=16, fontweight='bold');
+ax.set(ylabel='Number of Occurences',
+        xlabel='Prediction Probability')
+fig.savefig('figures\prediction_probability.png')
+
+
+#----- CONFUSION MATRIX -----
+
+#this gives us [[true positives, false positives], [false negatives, true negatives]]
 print('Confusion Matrix \n', confusion_matrix(y_test, y_pred), '\n')
+plot_confusion_matrix(clf, x_test, y_test, cmap=plt.cm.Blues)
 
 
-#area under receiver operating curve (ROC/AUC)
+#----- RECEIVER OPERATING CURVE (ROC & AUC) -----
+
+#description
 
 
-#classification report
+#----- CLASSIFICATION REPORT -----
+
+#description
 print('Classification Report \n', classification_report(y_test, y_pred), '\n')
 
 
