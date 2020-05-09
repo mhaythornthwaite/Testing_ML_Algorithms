@@ -143,29 +143,34 @@ print('Classification Report \n', classification_report(y_test, y_pred), '\n')
 #------------------------------------------------------------------------------
 print('\n-------------------- 5. MODEL IMPROVEMENTS -----------------------\n')
 
-#try different amount of n_estimators
+#commented out due to large run times, testing is complete see output figure
+'''
+#try different amount of n_estimators - we'll use cross-val rather than score to try and get a more stable result.
+
+cv_score = cross_val_score(clf, x, y, cv=5)
 
 x_t = range(20, 200, 20)
 y_t = []
 for i in x_t:
     clf_t = RandomForestClassifier(n_estimators=i)
-    clf_t.fit(x_train, y_train)
-    q = round((clf_t.score(x_test, y_test) * 100), 2)
-    print(f'Test accuracy with n_estimators = {i} is {q}%')
-    y_t.append(q)
+    cv_score = cross_val_score(clf_t, x, y, cv=5)
+    cv_score_av = round(np.mean(cv_score)*100,1)
+    print(f'Test accuracy with n_estimators = {i} is {cv_score_av}%')
+    y_t.append(cv_score_av)
     
 fig, ax = plt.subplots()
 ax.plot(x_t, y_t)
 
 ax.set(xlabel='N_Estimator',
-       ylabel='Test Data Accuracy')
+       ylabel='Test Data Accuracy',
+       ylim=(75, 85))
 ax.set_axisbelow(True)
 ax.grid(color='xkcd:light grey')
 
 fig.suptitle('Hyperparameter Testing - N Estimators', y=0.96, fontsize=14, fontweight='bold');
 
 fig.savefig('figures\Hyperparameter_Testing_N_Estimators.png')
-
+'''
 
 #------------------------------------------------------------------------------
 print('\n----------------- 6. SAVING THE TRAINED MODEL --------------------\n')
