@@ -6,6 +6,14 @@ This sheet will cover the high level concepts behind numerous machine learning a
 
 
 
+---------------------------- K NEAREST NEIGHBORS -----------------------------
+
+A deterministic algorithm, k nearest neighbors classifies a point through the classification of neighboring points. If K=1 then we only use the nearest neighbor to define the category. If k=10 then we search for the nearest 10 points. The category that appears the most in this 10 wins. Therefore it is a good idea to set k=odd number therefore avoiding potential ties.
+
+It is also important to set k lower that the number of data points within a specific class. 
+
+
+
 ---------------------- DECISION TREES & RANDOM FORESTS ------------------------
 
 
