@@ -14,7 +14,35 @@ It is also important to set k lower that the number of data points within a spec
 
 
 
----------------------- DECISION TREES & RANDOM FORESTS ------------------------
+------------------------------- DECISION TREES --------------------------------
+
+Also a deterministic algorithm. A decision tree asks a question and then classifies based on the answer. We can stack these questions and also have questions that have different type data, such as numeric and boolean. Also note the classification can be repeated on multiple leaves, such that we can have a complex decision tree with numerous questions, but we may only have two classes.
+
+The very top of the tree is called the root node or just the root. Internal nodes have arrows pointing in and out of them. To have arrows pointing out we must be asking a question. Finally the classification nodes, ones with arrows in but no arrow out, are called leaf nodes or just leaves. 
+
+How do we automate this process to build our tree? 
+First we need to decide which feature should be the first in our tree, or which feature should be our root node. This is done through measuring impurity of each of the possible root nodes. A popular measure of impurity is Gini impurity.
+
+Gini = 1 - (probability of 'yes')^2 - (probability of 'no')^2
+
+If the root node is 'pure' i.e. it can classify the data perfectly, Gini = 0
+
+Note we will have two measurements of Gini impurity, one for each leaf from the root. As the number of data gone into each leaf will likely be different (e.g. has chest pain, yes or no), we calculate the weighted average of the Gini impurities. The feature with the lowest impurity is used as the root node.
+
+We then repeat this process individually for the two newly created internal nodes. The feature which has the lowest impurity is used next. 
+
+Very imprtant to note, if this impurity is higher than the impurity from the node it is originating, we instead turn this node into a leaf node.
+
+Note this has all been for features which are simple boolean, yes, no answers. We now need to consider how to handle a numeric feature. This includes an additional step, in order to create a boolean answer. Here we sort our numeric data and average between each adjacent number. For example if weight = [135, 155, 195], we will use 145 and 175. We then calculate the impurities of these values. The one with the lowest imputiy is selected as our new feature. For eaxmple if 175 had the lowest impurity, the internal node would state, 'do they weight <175'. This can then be compared to already, bollean type features.
+
+But how about rank scores, or data with more than 2 options, like favourite colour. Ranked data is similar to numeric, where we calculate the impurity of each rank. Where we have more than 2 options, like fav colour we calulate impurity for each colour, and also every possible combination of colours.
+
+
+
+------------------------------- RANDOM FORESTS --------------------------------
+
+
+
 
 
 
