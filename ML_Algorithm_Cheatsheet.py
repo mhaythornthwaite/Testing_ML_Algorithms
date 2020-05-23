@@ -41,6 +41,20 @@ But how about rank scores, or data with more than 2 options, like favourite colo
 
 ------------------------------- RANDOM FORESTS --------------------------------
 
+This is a stochastic algorithm.
+
+Step 1: create a bootstrapped that is the same size as the original dataset. A bootstrapped dataset is one where we randly select samples from the original dataset, with the ability to select the same sample more than once.
+
+Step 2: create a decision tree using the bootsrapped datset but we'll only consider a smaller random subset of features. The number of features to consider at each step in making the decision tree can be optimised through testing using an accuracy metric. Typically the square root of the number of features is appropriate, but this should be tested.
+
+To build a random forest we repeat these steps and build hundreds of decision trees, each with a new and random bootstrapped dataset.
+
+We then classify based on the average result of all the trees. So if 62 tress say the sample is class A and 12 trees say the sample is class B, we classify the sample as A. 
+
+Note bootstrapping the data plus using the aggregate of many trees to make a decision is called Bagging. (Bootrapping and AGGregate = BAGGing)
+
+Also note, when we make a bootstrapped dataset, typically around one third of the data is not used. We can group these into the 'Out-Of-Bag Dataset'. We can use these to measure how accurate our random forest is by the proportion of out-of-bag samples that were correctly classified by the random forest. The proportion of incorrectly classified samples is called the out-of-bag error.
+
 
 
 
