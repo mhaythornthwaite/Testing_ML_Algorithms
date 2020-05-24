@@ -56,7 +56,18 @@ Note bootstrapping the data plus using the aggregate of many trees to make a dec
 Also note, when we make a bootstrapped dataset, typically around one third of the data is not used. We can group these into the 'Out-Of-Bag Dataset'. We can use these to measure how accurate our random forest is by the proportion of out-of-bag samples that were correctly classified by the random forest. The proportion of incorrectly classified samples is called the out-of-bag error.
 
 
+But what about missing data?
+There are two types of missing data: data in our oiginal dataset used to build our trees, andmissing data in our sample we wish to classify.
 
+To start with the first, we iterate to produce an initial guess of this missing data and graduallyimprove the quality of this guess.
+
+Step 1: Take the most common value in that feature and use this as the missing data value. For numeric data we can take the median value. 
+
+Step 2: We want to know which samples are similar to the one with the missing data. We keep track of similar samples with a 'Proximity Matrix'. This has a row and column for each sample, therefore if our data has 4 samples our matrix will be 4*4. If two samples end up on the same leaf node they get assigned a value of 1 in the proximity matrix. Else they get 0. We repeat for every tree in the forest, adding 1 or 0 to the proximity matrix each time. We then divide the matrix by the total number of trees. We  then use this proximity matrix as the weights to calculate the missing value. To sum up, this is like the weighted mean of similar samples, instead of the mean of all samples.
+
+Now that the missing data has been revised we run this whole process multiple times until our values converge, usually 6-7 times.
+
+But now what do we do with missing samples in the data we want to categorise? First we make two copies of the data, both with the different final class. We then make a guess as to the missing data with the previous method. We then run the two samples down all he trees in the forest and see which is labelled correctly the most times. The most correctly classified sample is the the one we use, and hence by virtue of doing this process we have already classified the sample.
 
 
 
