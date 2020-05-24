@@ -71,6 +71,58 @@ But now what do we do with missing samples in the data we want to categorise? Fi
 
 
 
+---------------------------------- ADABOOST -----------------------------------
+
+The first concept of adaboost is using trees with only the root node and two leaves. This is called a stump and is classified as a weak learner. 
+
+In a random forest each tree has an equal vote on the final classification. In cntrast to adaboost, some stumps get more say in the final classification than others. Therefore there is a weight to each tree/stump.
+
+In a random forest each tree is made entirely independantly from the previous. In contrast order is important to adaboodst. The errors that the first stump makes influences how the second is made.
+
+How do we make the stumps?
+First we create a 'sample weight' column. This indicates how important it is that that sample is correctly classified. To begin with these are set to equal, so each sample weight will be 1/number_of_samples.
+
+We now need to make the same stump. This is done in the same way we calculate the root node in a decision tree, i.e. with a calculation of gini impurity for each feature.
+
+We now need to calculate this stumps final weight, to know how much of a say it will have in the final classifcation. This is done with the 'Total Error' of this stumps classification. Say The stump correctly classifies 7 samples and incorrectly classifies 3 samples, then total_error = 0.3. We then calculate the weight with the following formula:
+
+weight = 0.5 * log([1- total_error] / total_error)
+
+weight = 0.5 * log(0.7/0.3) 
+
+weight = 0.18
+
+Note that we total_error > 0.5 weight will turn negative. This is useful because if our predictor is consistently making the wrong predictions the inverse will be correct predictions.
+
+Also note that were total_error = 1, 0 then the calculation will be infinity, therefore we typically put a small error constant it to prevent this happening. But if we have total_error = 1 or 0 then we have found the perfect classifier. 
+
+Crating the second stump. 
+One of the three concepts of adaboost is order is important and errors from the previous stump impact on the next. This is where the 'sample weights' come into play. Previously all sample weights were the same. Now however, we boost the sample weights of the samples which were incorrectly classified from the previous stump. This is achieved with the following formula:
+
+new sample weight = old sample weight * e ^ (previous stump weight)
+
+taking the previous example, of 10 samples 7 of which were corrctly classfied, we can calculate the new weight:
+
+new sample weight =  1/10 * e ^ 0.18
+new sample weight = 0.12
+
+now we need to calculate the new sample weight given a correctly classified sample. This is done with the following equation:
+
+new sample weight = old sample weight * e ^ (-previous stump weight)
+new sample weight =  1/10 * e ^ 0.18
+new sample weight = 0.08
+
+now we need to normalise the new sample weights so they sum to 1
+
+normalised new sample weight = new sample weight / sum(new sample weights)
+
+we can then use these weights when calculating the gini impurity for each feature. This is called the weighted gini impurity. 
+Alternativley we could create a new dataset that may contain duplicates of the samples with the largest weights. We use the sample weight as a probability of drawing this sample to go into the new dataset until the new dataset is the same size as the original. This adds a stochastic element to the algorithm. Once this is done we change the sample weight back to 1/number_of_samples.
+
+Once all the stumps have been made we classify the target samples using the stump weight as oposed to treating all stumps equally like we would in a random forest.
+
+
+
 -------------------- SUPPORT VECTOR CLASSIFIER & MACHINES ---------------------
 
 Maximal Margin Classifiers
