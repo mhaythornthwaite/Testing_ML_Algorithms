@@ -155,6 +155,50 @@ To sum up when we have 2 categories but there is no obvious linear classifier th
 
 
 
+------------------------------ LINEAR REGRESSION ------------------------------
+
+The objective of linear regession is to to minimise the sum of square residuals. We can do this with a gradient descent algorithm which will be discussed later.
+
+We can then assess the quality of this fitted like with R^2. 
+
+R^2 = 1 - [SS_res / SS_tot]
+
+where:
+SS_res is the residual sum of squares
+SS_tot is the total sum of squares (proportional to the variance)
+
+where the data is completely random the SS_res will be very similar to SS_tot. Therefore R^2 will be close to 0. When the data is highly correlated SS_res will be very small and R^2 ~= 1
+
+note variance is = SS_tot / n where n is the sample size. So if we want we can rewrite the above equation as:
+
+R^2 = 1 - [Var(lobf) / Var(mean)] 
+
+The reason we maight not do this is because all we are doing is adding an unecessary arithetic step by dividing both the numerator and denominator by n which cancel out.
+
+What happens now if we have only two points? Our R^2 will always be 1. For this we need a metric to understand whether R^2 is statistically significant. We do this with a p value. The p value quantifies how confident we should be in R^2. This is a complex process whereby we calculate F:
+
+F = [(SS_tot - SS_res) / (p_res - p_tot)] / [SS_res / (n - p_res)]
+
+where:
+
+p_res = number of variables (so for y = ax + b, p_res = 2)
+p_tot = number of variables we want to estimate, (y = ax + b, p_tot = 1)
+
+We then take random data and simulate what F might be thousands if not millions of time. This gives a background histogram of F given random data. We then take our data, calculate F and p is the number of larger values in this distribution, divided by the total number of values.
+
+
+
+------------------------------ GRADIENT DESCENT -------------------------------
+
+
+
+
+
+
+
+
+
+
 
 --------------------------------- NAIVE BAYES ---------------------------------
 
