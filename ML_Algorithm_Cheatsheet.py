@@ -159,6 +159,8 @@ To sum up when we have 2 categories but there is no obvious linear classifier th
 
 The objective of linear regession is to to minimise the sum of square residuals. We can do this with a gradient descent algorithm which will be discussed later.
 
+Note./ in normal regression we have a single variable to use to predict something (y = ax + b) and in multiple regression we have more than one variable to predict something (y = ax + bz + c)
+
 We can then assess the quality of this fitted like with R^2. 
 
 R^2 = 1 - [SS_res / SS_tot]
@@ -185,6 +187,23 @@ p_res = number of variables (so for y = ax + b, p_res = 2)
 p_tot = number of variables we want to estimate, (y = ax + b, p_tot = 1)
 
 We then take random data and simulate what F might be thousands if not millions of time. This gives a background histogram of F given random data. We then take our data, calculate F and p is the number of larger values in this distribution, divided by the total number of values.
+
+
+
+----------------------------- LOGISTIC REGRESSION -----------------------------
+
+This is similar to linear regression except it predicts whether something is true or false instead of predicting a continuous variable. 
+
+Instead of fitting a linear function to the data, logistic regression fits an S shaped logistic function with the curve going from 0 to 1 (with 0 being false and 1 being true). Therefore the curve will tell you the probability of something being true or false. Whilst this is a useful output, logistic regression is usually used for classification with 50% typically being set as the threshold.
+
+Like with linear regression we may use a single variable or multiple variables. It is also fine with continuous data like weight or discrete data like blood type.
+
+Unlike linear regression, logistic regression does not use least squares or residuals, instead it uses something called maximum likelihood. 
+
+Fitting an S shaped function using maximum liklihood
+
+Step 1 - take our data and transform the probability into log(probability). This shifts all our data points into positive and negative infinity. 
+
 
 
 
