@@ -202,7 +202,40 @@ Unlike linear regression, logistic regression does not use least squares or resi
 
 Fitting an S shaped function using maximum liklihood
 
-Step 1 - take our data and transform the probability into log(probability). This shifts all our data points into positive and negative infinity. 
+Step 1 - take our data and transform the probability into log(probability). This shifts all our data points into positive and negative infinity. Thus the resduals between the linear trend fitted are also infinity. Therefore we can not use a standard least squares approach like we would for linear regression. Instead we use maximum liklihood.
+
+Step 2 - next we project the original data points on to the candiate line. This gives each sample a candidate log(odds) value. 
+
+Step 3 - tranform the log(odds) back to probability using:
+
+p = e^log(odds) / [1 + p^log(odds)]
+
+so now we have our original data transformed onto a candidate line. 
+
+Step 4 - we can compare the liklihood from the candiate line with the observed target class. This is done with the sum of the log(liklihood) of each point.
+
+point a
+liklihood = 0.9
+actual = 1
+
+point b
+liklihood = 0.2
+actual = 0
+
+point c
+liklihood = 0.4
+actual = 0
+
+point d
+liklihood = 0.4
+actual = 1
+
+log(liklihood of data given candidate line) = log(0.9) + log(0.8) + log(0.6) + log(0.4)
+
+
+We then repeat this process for various different candidate lines, where we are trying to maximise the above formula. log(liklihood of data given candidate line) is effectively our cost function and is always negative, therefore we are tying to find the smallest negative number.
+
+Note./ we only need to do rotations in log space, adn the algorithm typically only takes a few rotations to find the optimal fit.
 
 
 
