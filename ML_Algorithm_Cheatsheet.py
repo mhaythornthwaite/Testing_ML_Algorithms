@@ -240,19 +240,55 @@ Note./ we only need to do rotations in log space, adn the algorithm typically on
 
 
 
+
 ------------------------------ GRADIENT DESCENT -------------------------------
 
 
 
-
-
-
-
-
-
-
-
 --------------------------------- NAIVE BAYES ---------------------------------
+
+
+
+----------------------------- K-MEANS CLUSTERING ------------------------------
+
+Step 1 - identify the number of clusters you want to identify in your data, this is k.
+
+Step 2 - randomly select k distinct data points These will be the centre points of our initial clusters.
+
+Step 3 - measure the distance between the first point and the k initial clusters. We then assign this point to the nearest cluster.
+
+Step 4 - repeat step 3 for all the data, until each point is classified in a cluster.
+
+Step 5 - calculate the mean of each cluster and repeat steps 3 and 4, until we have reassigned each value. We repeat this step until the clustering does not change when we recalculate the mean and re-cluster.
+
+We can then assess the quality of the clustering by summing the variation within each cluster. Clusters with wildly different values of variance are deemed poor, whilst clusters with similar variance are deemed good.
+
+Therefore, we may repeat this process many times with different starting cluster positions, and select the model which has clusters with similar variance.
+
+
+How do we know what is the best value of k?
+
+We may just try different values of k and compare the total variation for each. For example:
+
+Var(k=2) = Var_cluster1 + Var_cluster2
+
+Var(k=3) = Var_cluster1 + Var_cluster2 + Var_cluster3
+
+The more clusters we have, the more vatriance will reduce. However, the rate of reduction in variance typically reduces after we reach the optimal k value. This can be found using an elbow plot (reduction in Variance lotted against k)
+
+
+How about data in 2 or more dimensions?
+
+The onlly difference here is we can not use standard distance, we instead have to use Euclidean distance. In two dimensions, Euclidean distance is the same as Pythagorean distance. 
+
+
+
+
+--------------------------- HIERARCHICAL CLUSTERING ---------------------------
+
+
+
+
 
 
 
