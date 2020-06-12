@@ -2,13 +2,13 @@
 
 -------------------------- ML ALGORITHM CHEATSHEET ----------------------------
 
-This sheet will cover the high level concepts behind numerous machine learning algorithms.
+This sheet will cover the high level concepts behind numerous supervised machine learning algorithms.
 
 
 
 ---------------------------- K NEAREST NEIGHBORS -----------------------------
 
-A deterministic algorithm, k nearest neighbors classifies a point through the classification of neighboring points. If K=1 then we only use the nearest neighbor to define the category. If k=10 then we search for the nearest 10 points. The category that appears the most in this 10 wins. Therefore it is a good idea to set k=odd number therefore avoiding potential ties.
+A deterministic algorithm, k nearest neighbors classifies a point through the classification of neighboring points. If K=1 then we only use the nearest neighbor to define the category. If k=10 then we search for the nearest 10 points. The category that appears the most in this 10 wins. Therefore, it is a good idea to set k=odd number therefore avoiding potential ties.
 
 It is also important to set k lower that the number of data points within a specific class. 
 
@@ -31,11 +31,11 @@ Note we will have two measurements of Gini impurity, one for each leaf from the 
 
 We then repeat this process individually for the two newly created internal nodes. The feature which has the lowest impurity is used next. 
 
-Very imprtant to note, if this impurity is higher than the impurity from the node it is originating, we instead turn this node into a leaf node.
+Very important to note, if this impurity is higher than the impurity from the node it is originating, we instead turn this node into a leaf node.
 
-Note this has all been for features which are simple boolean, yes, no answers. We now need to consider how to handle a numeric feature. This includes an additional step, in order to create a boolean answer. Here we sort our numeric data and average between each adjacent number. For example if weight = [135, 155, 195], we will use 145 and 175. We then calculate the impurities of these values. The one with the lowest imputiy is selected as our new feature. For eaxmple if 175 had the lowest impurity, the internal node would state, 'do they weight <175'. This can then be compared to already, bollean type features.
+Note this has all been for features which are simple boolean, yes, no answers. We now need to consider how to handle a numeric feature. This includes an additional step, in order to create a boolean answer. Here we sort our numeric data and average between each adjacent number. For example if weight = [135, 155, 195], we will use 145 and 175. We then calculate the impurities of these values. The one with the lowest impurity is selected as our new feature. For example if 175 had the lowest impurity, the internal node would state, 'do they weight <175'. This can then be compared to already, bolean type features.
 
-But how about rank scores, or data with more than 2 options, like favourite colour. Ranked data is similar to numeric, where we calculate the impurity of each rank. Where we have more than 2 options, like fav colour we calulate impurity for each colour, and also every possible combination of colours.
+But how about rank scores, or data with more than 2 options, like favourite colour. Ranked data is similar to numeric, where we calculate the impurity of each rank. Where we have more than 2 options, like fav colour we calculate impurity for each colour, and also every possible combination of colours.
 
 
 
@@ -43,23 +43,23 @@ But how about rank scores, or data with more than 2 options, like favourite colo
 
 This is a stochastic algorithm.
 
-Step 1: create a bootstrapped that is the same size as the original dataset. A bootstrapped dataset is one where we randly select samples from the original dataset, with the ability to select the same sample more than once.
+Step 1: create a bootstrapped that is the same size as the original dataset. A bootstrapped dataset is one where we randomly select samples from the original dataset, with the ability to select the same sample more than once.
 
-Step 2: create a decision tree using the bootsrapped datset but we'll only consider a smaller random subset of features. The number of features to consider at each step in making the decision tree can be optimised through testing using an accuracy metric. Typically the square root of the number of features is appropriate, but this should be tested.
+Step 2: create a decision tree using the bootstrapped dataset but we'll only consider a smaller random subset of features. The number of features to consider at each step in making the decision tree can be optimised through testing using an accuracy metric. Typically the square root of the number of features is appropriate, but this should be tested.
 
 To build a random forest we repeat these steps and build hundreds of decision trees, each with a new and random bootstrapped dataset.
 
 We then classify based on the average result of all the trees. So if 62 tress say the sample is class A and 12 trees say the sample is class B, we classify the sample as A. 
 
-Note bootstrapping the data plus using the aggregate of many trees to make a decision is called Bagging. (Bootrapping and AGGregate = BAGGing)
+Note bootstrapping the data plus using the aggregate of many trees to make a decision is called Bagging. (Bootstrapping and AGGregate = BAGGing)
 
 Also note, when we make a bootstrapped dataset, typically around one third of the data is not used. We can group these into the 'Out-Of-Bag Dataset'. We can use these to measure how accurate our random forest is by the proportion of out-of-bag samples that were correctly classified by the random forest. The proportion of incorrectly classified samples is called the out-of-bag error.
 
 
 But what about missing data?
-There are two types of missing data: data in our oiginal dataset used to build our trees, andmissing data in our sample we wish to classify.
+There are two types of missing data: data in our original dataset used to build our trees, and missing data in our sample we wish to classify.
 
-To start with the first, we iterate to produce an initial guess of this missing data and graduallyimprove the quality of this guess.
+To start with the first, we iterate to produce an initial guess of this missing data and gradually improve the quality of this guess.
 
 Step 1: Take the most common value in that feature and use this as the missing data value. For numeric data we can take the median value. 
 
@@ -75,7 +75,7 @@ But now what do we do with missing samples in the data we want to categorise? Fi
 
 The first concept of adaboost is using trees with only the root node and two leaves. This is called a stump and is classified as a weak learner. 
 
-In a random forest each tree has an equal vote on the final classification. In cntrast to adaboost, some stumps get more say in the final classification than others. Therefore there is a weight to each tree/stump.
+In a random forest each tree has an equal vote on the final classification. In contrast to adaboost, some stumps get more say in the final classification than others. Therefore there is a weight to each tree/stump.
 
 In a random forest each tree is made entirely independantly from the previous. In contrast order is important to adaboodst. The errors that the first stump makes influences how the second is made.
 
@@ -84,7 +84,7 @@ First we create a 'sample weight' column. This indicates how important it is tha
 
 We now need to make the same stump. This is done in the same way we calculate the root node in a decision tree, i.e. with a calculation of gini impurity for each feature.
 
-We now need to calculate this stumps final weight, to know how much of a say it will have in the final classifcation. This is done with the 'Total Error' of this stumps classification. Say The stump correctly classifies 7 samples and incorrectly classifies 3 samples, then total_error = 0.3. We then calculate the weight with the following formula:
+We now need to calculate this stumps final weight, to know how much of a say it will have in the final classifacation. This is done with the 'Total Error' of this stumps classification. Say The stump correctly classifies 7 samples and incorrectly classifies 3 samples, then total_error = 0.3. We then calculate the weight with the following formula:
 
 weight = 0.5 * log([1- total_error] / total_error)
 
@@ -96,12 +96,12 @@ Note that we total_error > 0.5 weight will turn negative. This is useful because
 
 Also note that were total_error = 1, 0 then the calculation will be infinity, therefore we typically put a small error constant it to prevent this happening. But if we have total_error = 1 or 0 then we have found the perfect classifier. 
 
-Crating the second stump. 
+Creating the second stump. 
 One of the three concepts of adaboost is order is important and errors from the previous stump impact on the next. This is where the 'sample weights' come into play. Previously all sample weights were the same. Now however, we boost the sample weights of the samples which were incorrectly classified from the previous stump. This is achieved with the following formula:
 
 new sample weight = old sample weight * e ^ (previous stump weight)
 
-taking the previous example, of 10 samples 7 of which were corrctly classfied, we can calculate the new weight:
+taking the previous example, of 10 samples 7 of which were correctly classified, we can calculate the new weight:
 
 new sample weight =  1/10 * e ^ 0.18
 new sample weight = 0.12
@@ -117,9 +117,9 @@ now we need to normalise the new sample weights so they sum to 1
 normalised new sample weight = new sample weight / sum(new sample weights)
 
 we can then use these weights when calculating the gini impurity for each feature. This is called the weighted gini impurity. 
-Alternativley we could create a new dataset that may contain duplicates of the samples with the largest weights. We use the sample weight as a probability of drawing this sample to go into the new dataset until the new dataset is the same size as the original. This adds a stochastic element to the algorithm. Once this is done we change the sample weight back to 1/number_of_samples.
+Alternatively we could create a new dataset that may contain duplicates of the samples with the largest weights. We use the sample weight as a probability of drawing this sample to go into the new dataset until the new dataset is the same size as the original. This adds a stochastic element to the algorithm. Once this is done we change the sample weight back to 1/number_of_samples.
 
-Once all the stumps have been made we classify the target samples using the stump weight as oposed to treating all stumps equally like we would in a random forest.
+Once all the stumps have been made we classify the target samples using the stump weight as opposed to treating all stumps equally like we would in a random forest.
 
 
 
@@ -138,18 +138,18 @@ Otherwise known as a soft margin classifier, in the SVC we use cross validation 
 
 When in 1D the SVC is a point, in 2D the SVC is a line, in 3D the SVC is a plane and in 4D+ the SVC is a hyperplane
 
-Note that the soft margin is either side of the SVC and equidistant from it irresepctive of dimension. Due to the cross validation there are likely to be points inside the soft margin that are miss classified. This is opposed to maximal margin classifiers that will have no observations within the margin. 
+Note that the soft margin is either side of the SVC and equidistant from it irrespective of dimension. Due to the cross validation there are likely to be points inside the soft margin that are miss classified. This is opposed to maximal margin classifiers that will have no observations within the margin. 
 
 
 Support Vector Machine
 
 What happens if we have multiple clusters which are the same class. Say a cluster of A, cluster of B and then another cluster of A. A typical SVC will not work in this instance. Here we can perform a neat trick by increasing the dimensionality of the data. Say we have 1 dimensional data and set y = x^2. We can now separate this 2 dimensional data with a typical SVC.
 
-But how do we decide that function to use to map the data to higher dimensions? In the example above we use x^2 but what about x^3. Here is where SVM uses kernal functions to systematically find SVC in higher dimensions. The polynomial kernal computes the d-dimensional relationship between each pair of observations (i.e. the distance) and uses this information to find the SVC. We can use cross validation to find the optimal value of d.
+But how do we decide that function to use to map the data to higher dimensions? In the example above we use x^2 but what about x^3. Here is where SVM uses kernel functions to systematically find SVC in higher dimensions. The polynomial kernel computes the d-dimensional relationship between each pair of observations (i.e. the distance) and uses this information to find the SVC. We can use cross validation to find the optimal value of d.
 
-One other kernal function is the Radial kernal. Instead of mapping the data to d-dimensionsal space, the radial kernal extends to infinite dimensions and behaves like a weighted nearest neighbor.
+One other kernel function is the Radial kernel. Instead of mapping the data to d-dimensional space, the radial kernel extends to infinite dimensions and behaves like a weighted nearest neighbor.
 
-Last important point to note is that kernal functions only calculate the relationships between every pair of points as if they are in the higher dimensions, they dont actually do the transform. This is known as the kernal trick and reduces the amount memory required to do the calculation. It also makes the Radial kernal possible.
+Last important point to note is that kernel functions only calculate the relationships between every pair of points as if they are in the higher dimensions, they dont actually do the transform. This is known as the kernel trick and reduces the amount memory required to do the calculation. It also makes the Radial kernel possible.
 
 To sum up when we have 2 categories but there is no obvious linear classifier that separates them in a nice way, SVM works by moving the data into relatively high dimensional space and finding a relatively high dimensional SVC that can effectively classify the observations.
 
@@ -157,7 +157,7 @@ To sum up when we have 2 categories but there is no obvious linear classifier th
 
 ------------------------------ LINEAR REGRESSION ------------------------------
 
-The objective of linear regession is to to minimise the sum of square residuals. We can do this with a gradient descent algorithm which will be discussed later.
+The objective of linear regression is to minimise the sum of square residuals. We can do this with a gradient descent algorithm which will be discussed later.
 
 Note./ in normal regression we have a single variable to use to predict something (y = ax + b) and in multiple regression we have more than one variable to predict something (y = ax + bz + c)
 
@@ -175,7 +175,7 @@ note variance is = SS_tot / n where n is the sample size. So if we want we can r
 
 R^2 = 1 - [Var(lobf) / Var(mean)] 
 
-The reason we maight not do this is because all we are doing is adding an unecessary arithetic step by dividing both the numerator and denominator by n which cancel out.
+The reason we might not do this is because all we are doing is adding an unnecessary arithmetic step by dividing both the numerator and denominator by n which cancel out.
 
 What happens now if we have only two points? Our R^2 will always be 1. For this we need a metric to understand whether R^2 is statistically significant. We do this with a p value. The p value quantifies how confident we should be in R^2. This is a complex process whereby we calculate F:
 
@@ -200,42 +200,42 @@ Like with linear regression we may use a single variable or multiple variables. 
 
 Unlike linear regression, logistic regression does not use least squares or residuals, instead it uses something called maximum likelihood. 
 
-Fitting an S shaped function using maximum liklihood
+Fitting an S shaped function using maximum likelihood
 
-Step 1 - take our data and transform the probability into log(probability). This shifts all our data points into positive and negative infinity. Thus the resduals between the linear trend fitted are also infinity. Therefore we can not use a standard least squares approach like we would for linear regression. Instead we use maximum liklihood.
+Step 1 - take our data and transform the probability into log(probability). This shifts all our data points into positive and negative infinity. Thus the residuals between the linear trend fitted are also infinity. Therefore we can not use a standard least squares approach like we would for linear regression. Instead we use maximum likelihood.
 
-Step 2 - next we project the original data points on to the candiate line. This gives each sample a candidate log(odds) value. 
+Step 2 - next we project the original data points on to the candidate line. This gives each sample a candidate log(odds) value. 
 
-Step 3 - tranform the log(odds) back to probability using:
+Step 3 - transform the log(odds) back to probability using:
 
 p = e^log(odds) / [1 + p^log(odds)]
 
 so now we have our original data transformed onto a candidate line. 
 
-Step 4 - we can compare the liklihood from the candiate line with the observed target class. This is done with the sum of the log(liklihood) of each point.
+Step 4 - we can compare the likelihood from the candidate line with the observed target class. This is done with the sum of the log(likelihood) of each point.
 
 point a
-liklihood = 0.9
+likelihood = 0.9
 actual = 1
 
 point b
-liklihood = 0.2
+likelihood = 0.2
 actual = 0
 
 point c
-liklihood = 0.4
+likelihood = 0.4
 actual = 0
 
 point d
-liklihood = 0.4
+likelihood = 0.4
 actual = 1
 
-log(liklihood of data given candidate line) = log(0.9) + log(0.8) + log(0.6) + log(0.4)
+log(likelihood of data given candidate line) = log(0.9) + log(0.8) + log(0.6) + log(0.4)
 
 
-We then repeat this process for various different candidate lines, where we are trying to maximise the above formula. log(liklihood of data given candidate line) is effectively our cost function and is always negative, therefore we are tying to find the smallest negative number.
+We then repeat this process for various different candidate lines, where we are trying to maximise the above formula. log(likelihood of data given candidate line) is effectively our cost function and is always negative, therefore we are tying to find the smallest negative number.
 
-Note./ we only need to do rotations in log space, adn the algorithm typically only takes a few rotations to find the optimal fit.
+Note./ we only need to do rotations in log space, and the algorithm typically only takes a few rotations to find the optimal fit.
 
 
 
@@ -249,60 +249,6 @@ Note./ we only need to do rotations in log space, adn the algorithm typically on
 
 
 
------------------------------ K-MEANS CLUSTERING ------------------------------
-
-Step 1 - identify the number of clusters you want to identify in your data, this is k.
-
-Step 2 - randomly select k distinct data points These will be the centre points of our initial clusters.
-
-Step 3 - measure the distance between the first point and the k initial clusters. We then assign this point to the nearest cluster.
-
-Step 4 - repeat step 3 for all the data, until each point is classified in a cluster.
-
-Step 5 - calculate the mean of each cluster and repeat steps 3 and 4, until we have reassigned each value. We repeat this step until the clustering does not change when we recalculate the mean and re-cluster.
-
-We can then assess the quality of the clustering by summing the variation within each cluster. Clusters with wildly different values of variance are deemed poor, whilst clusters with similar variance are deemed good.
-
-Therefore, we may repeat this process many times with different starting cluster positions, and select the model which has clusters with similar variance.
-
-
-How do we know what is the best value of k?
-
-We may just try different values of k and compare the total variation for each. For example:
-
-Var(k=2) = Var_cluster1 + Var_cluster2
-
-Var(k=3) = Var_cluster1 + Var_cluster2 + Var_cluster3
-
-The more clusters we have, the more vatriance will reduce. However, the rate of reduction in variance typically reduces after we reach the optimal k value. This can be found using an elbow plot (reduction in Variance lotted against k)
-
-
-How about data in 2 or more dimensions?
-
-The onlly difference here is we can not use standard distance, we instead have to use Euclidean distance. In two dimensions, Euclidean distance is the same as Pythagorean distance. 
-
-
-
-
---------------------------- HIERARCHICAL CLUSTERING ---------------------------
-
-Note that hierarchical clustering is often undertaken on heatmaps. Heatmaps display n-dimentional data with the x-axis representing sample number and the y-axis representing feature. A colourmap is used to denote the value of each feature. Note that in heatmaps we might want to cluster features as oposed to samples. 
-
-Step 1 - find out which sample is most similar to sample 1 and repeat for every sample. Similarity is often measured with Euclidean distance (where n in the formula denotes number of features). Alternatively we could use the Manhattan distance which instead of squaring the differences before summing and square rooting, we simply sum the absolute differences.
-
-Step 2 - of the different combinations, merge the two samples which are most similar into a cluster. But how do we make the cluster like a sample? 
-
-    - Centroid : we can take the average of the cluster for each feature
-
-    - Single-linkage : we can use the closest point in each cluster. Therefore each time we compare a feature in a sample to a cluster we take the closest point in that cluster. 
-
-    - Complete-linkage : we can use the furthest point in each cluster. 
-
-    - Average-linkage : calcualtes the distance between all the points in the cluster and the sample of interest and averages.
-
-Step 3 - go back to step 1 and 2 and repeat, treating the new cluster like a single sample.
-
-Note if we continue indefinitely we will end up with a single cluster. As each iteration reduces the number of clusters by 1, we can view the different cluster from 1 to n (where n is the number of samples, in sklearn set n_cluster)
 
 
 
