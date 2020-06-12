@@ -286,9 +286,23 @@ The onlly difference here is we can not use standard distance, we instead have t
 
 --------------------------- HIERARCHICAL CLUSTERING ---------------------------
 
+Note that hierarchical clustering is often undertaken on heatmaps. Heatmaps display n-dimentional data with the x-axis representing sample number and the y-axis representing feature. A colourmap is used to denote the value of each feature. Note that in heatmaps we might want to cluster features as oposed to samples. 
 
+Step 1 - find out which sample is most similar to sample 1 and repeat for every sample. Similarity is often measured with Euclidean distance (where n in the formula denotes number of features). Alternatively we could use the Manhattan distance which instead of squaring the differences before summing and square rooting, we simply sum the absolute differences.
 
+Step 2 - of the different combinations, merge the two samples which are most similar into a cluster. But how do we make the cluster like a sample? 
 
+    - Centroid : we can take the average of the cluster for each feature
+
+    - Single-linkage : we can use the closest point in each cluster. Therefore each time we compare a feature in a sample to a cluster we take the closest point in that cluster. 
+
+    - Complete-linkage : we can use the furthest point in each cluster. 
+
+    - Average-linkage : calcualtes the distance between all the points in the cluster and the sample of interest and averages.
+
+Step 3 - go back to step 1 and 2 and repeat, treating the new cluster like a single sample.
+
+Note if we continue indefinitely we will end up with a single cluster. As each iteration reduces the number of clusters by 1, we can view the different cluster from 1 to n (where n is the number of samples, in sklearn set n_cluster)
 
 
 
