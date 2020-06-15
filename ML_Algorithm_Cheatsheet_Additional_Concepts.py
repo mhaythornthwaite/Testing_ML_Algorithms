@@ -61,6 +61,35 @@ Say, using the eigenvalues of the 3 PC's in the above examples, we have PC1 = 79
 Note that is also a powerful dimensionality reduction tool. In the above we could reduce our data to only 2 dimensions, and only lose 6% of the variation. This may instead be chosen as features to train our model.
 
 
+------------------------ LINEAR DISCRIMINANT ANALYSIS -------------------------
+
+Here were not that interested in the feature with the most variation (like PCA is). Instead we're interesting in maximising the separability between classes.
+
+So LDA is like PCA but instead of using variation as the cost function we use separability among the known categories as the cost function.
+
+Using a 2D example, LDA is exactly the same as a chi angle projection (seismic AVO analysis). We rotate a projection axis around the origin, until we have maximum separability between the two classes (the two classes in AVO chi angle projection are brine and oil).
+
+How do we decide which projection angle is best? We do this with two criteria:
+
+1. Maximise the distance between the means of the classes - mu
+
+2. Minimise the variation or scatter within each class - s
+
+We want to maximise the cost function below:
+
+cost_function = (mu_1 - mu_2)^2 / (s_1^2 + s_2^2)
+
+This process is the same if we have more than 2 dimensions.
+
+When we have more than 2 classes things change slightly with the distance. Here we calculate the centroid of all the data. Now we measure the distance between each class and the centroid, square and sum. The scatter remains the same.
+
+LDA is similar to PCA in that each axis is ranked. LDA1 is the best axis to separate classes, LDA2 is the second best etc. Just like PCA you can also study the components of each axis in order to understand importance of a given feature. And just like PCA it is possible to understand how much seperability is achieved with the reduced dimensions, analogous to the loading score in PCA.
+
+
+
+
+
+
 
 
 
