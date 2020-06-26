@@ -8,6 +8,8 @@ This sheet will cover the high level concepts behind numerous unsupervised machi
 
 ----------------------------- K-MEANS CLUSTERING ------------------------------
 
+This is a stochastic algorithm.
+
 Step 1 - identify the number of clusters you want to identify in your data, this is k.
 
 Step 2 - randomly select k distinct data points These will be the centre points of our initial clusters.
@@ -42,6 +44,8 @@ The only difference here is we can not use standard distance, we instead have to
 
 --------------------------- HIERARCHICAL CLUSTERING ---------------------------
 
+This is a deterministic algorithm.
+
 Note that hierarchical clustering is often undertaken on heatmaps. Heatmaps display n-dimensional data with the x-axis representing sample number and the y-axis representing feature. A colourmap is used to denote the value of each feature. Note that in heatmaps we might want to cluster features as opposed to samples. 
 
 Step 1 - find out which sample is most similar to sample 1 and repeat for every sample. Similarity is often measured with Euclidean distance (where n in the formula denotes number of features). Alternatively we could use the Manhattan distance which instead of squaring the differences before summing and square rooting, we simply sum the absolute differences.
@@ -61,6 +65,28 @@ Step 3 - go back to step 1 and 2 and repeat, treating the new cluster like a sin
 Note if we continue indefinitely we will end up with a single cluster. As each iteration reduces the number of clusters by 1, we can view the different cluster from 1 to n (where n is the number of samples, in sklearn set n_cluster)
 
 
+
+------------------------------------ t-SNE ------------------------------------
+
+This is a stochastic algorithm.
+
+t-SNE is similar to PCA, in that it finds a way to project data into a lower dimensional space, in a way that the clustering is preserved.
+
+Step 1 - Determine the similarity between a single sample and all the other samples. For this we use Euclidean distance and plot a normal distribution to these distances. The instead of using the original Euclidean distance we use the value of y in the normal distribution at each point. This is what we define as similarity (unscaled at this point). The reason for doing this is distant points will have very low values of similarity due tot he shape of a normal distribution.
+
+Step 2 - We now scale the similarities, such that the sum of the similarites for a single sample is equal to 1.
+
+Step 3 - Repeat step 1 and 2 for all samples in the dataset.
+
+Step 4 - Because the normal distribution is governed by surrounding points, the direction in which you calculate similarity matters. Therefore, the similarity between sample A to sample H could be different from the similarity between sample H to sample A. Therefore, we average the similarity between each pair of samples.
+
+After this process you end up with a matrix of simularity scores. Note that t-SNE just defines the similarity of a point to itself as 0, no big deal, just convention.
+
+We then project the data into a lower dimension as defined by the user. This is random. We then recalculate similarites like before but this time with a t distribution instead of a normal distribution. This is the t in t-SNE. We then compare the matrix of similarities from the original data and reduced data, and one step at a time, alter the projection axis to make each pair of samples have a similar similarity. This is an iterative process.
+
+Each time the starting project is different, because this is randomly assigned. Therefore different starting positions may result in different outcomes, if the objective funtion has local minima.
+
+t-SNE can be used for both dimensionality reduction and clustering. 
 
 
 '''
