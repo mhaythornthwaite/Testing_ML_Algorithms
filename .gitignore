@@ -122,3 +122,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# dog breed classification data (raw data = 725mb)
+**/Dog_Breed_Image_Classification/test**
+**/Dog_Breed_Image_Classification/train**
+**/Dog_Breed_Image_Classification/misc**
+/Dog_Breed_Image_Classification/labels*
