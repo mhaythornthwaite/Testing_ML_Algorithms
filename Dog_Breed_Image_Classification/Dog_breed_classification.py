@@ -44,7 +44,7 @@ print(training_labels.head())
 test_image = Image.open('train/000bec180eb18c7604dcecc8fe0dba07.jpg')
 test_image.show()
 
-#creating list of ID's using lish comprehension so we can use filenames[n] to access an image
+#creating list of ID's using list comprehension so we can use filenames[n] to access an image
 filenames = ['train/' + fname + '.jpg' for fname in training_labels['id']]
 
 #accessing image with above list
@@ -52,12 +52,12 @@ Image.open(filenames[9000]).show()
 print(training_labels['breed'][9000])
 
 
-#turning our labels from text to integers
+#LABEL ENCODING APPROACH
 
 #creating list of dog breeds and assigning each one an integer
 labels_unique = pd.DataFrame({})
 labels_unique['id_str'] = np.unique(np.array(training_labels['breed']))
-labels_unique['id_int'] = list(range(1,121))
+labels_unique['id_int'] = list(range(0,120))
 
 #iterating over the entire dataframe of training labels and creating a list of the associated integer id.
 training_labels_id_int = []
@@ -72,6 +72,21 @@ for i in range(0, len(training_labels)):
 
 #appending this list to the training labels dataframe
 training_labels['id_int'] = training_labels_id_int
+
+
+#ONE HOT ENCODING APPROACH
+#turning every sample into a boolean array and then turning the boolean array into a binary array
+
+unique_breeds = np.unique(training_labels['breed'])
+
+boolean_labels = [label == unique_breeds for label in training_labels['breed']]
+
+boolean_labels_int = [label.astype(int) for label in boolean_labels]
+
+#testing this out with a random sample
+print(training_labels['breed'][9251])
+print(boolean_labels_int[9251])
+print('index of the dog breed of the sample:', boolean_labels_int[9251].argmax())
 
 
 
