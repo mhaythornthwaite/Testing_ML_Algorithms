@@ -20,8 +20,10 @@ print(' ---------------- START ---------------- \n')
 #Evaluation on kaggle requires a file with predicted probabilities of each dog breed for each test image. So there will be 120 predictions per image and the evaluation metric on kaggle is log loss
 
 from PIL import Image
+from matplotlib.pyplot import imread
 import pandas as pd
 import numpy as np
+from sklearn.model_selection import train_test_split
 import tensorflow as tf
 import tensorflow_hub as hub
 print('TF Version:', tf.__version__)
@@ -52,7 +54,10 @@ Image.open(filenames[9000]).show()
 print(training_labels['breed'][9000])
 
 
+#---------- DATA ENCODING ----------
+
 #LABEL ENCODING APPROACH
+#essentially turning each unique dog breed (currently in str format) into a unique integer.
 
 #creating list of dog breeds and assigning each one an integer
 labels_unique = pd.DataFrame({})
@@ -88,6 +93,29 @@ print(training_labels['breed'][9251])
 print(boolean_labels_int[9251])
 print('index of the dog breed of the sample:', boolean_labels_int[9251].argmax())
 
+
+#---------- CREATING TRAIN/VALIDATION SET ----------
+
+X = filenames
+y = boolean_labels
+
+#experimenting will start off with a largely trimmed version of the dataset, ~1000 images instead of 10,000. This will speed up the inital testing/experimentation
+
+NUM_IMAGES = 1000
+
+X_train, X_Val, y_train, y_val = train_test_split(X[:NUM_IMAGES], 
+                                                  y[:NUM_IMAGES], 
+                                                  test_size = 0.2, 
+                                                  random_state = 42)
+
+
+#---------- PREPROCESSING IMAGES ----------
+#Conversion of our images into tensors, and normalising the size, as each pixel is a feature and we require consistent features to both train and use the model.
+
+im = imread(X[20])
+im_tf = tf.constant(im)
+
+IMG_SIZE = 224
 
 
 
