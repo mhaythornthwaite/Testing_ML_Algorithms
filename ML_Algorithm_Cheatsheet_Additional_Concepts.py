@@ -86,8 +86,28 @@ When we have more than 2 classes things change slightly with the distance. Here 
 LDA is similar to PCA in that each axis is ranked. LDA1 is the best axis to separate classes, LDA2 is the second best etc. Just like PCA you can also study the components of each axis in order to understand importance of a given feature. And just like PCA it is possible to understand how much seperability is achieved with the reduced dimensions, analogous to the loading score in PCA.
 
 
+------------------------------- FEATURE SCALING -------------------------------
 
+We have two options to scale our data, and a few reasons to do it.
 
+Most unsupervised methods and some more simple supervised methods such as k-nearest neighbour, SVM etc. all reply upon euclidean distance in order to cluster our data into classes. If we have not scaled our data, the features with the largest numbers will be deemed heavily important by the algorithm, whilst features with low values will become unimportant and lost in the noise. By scaling our data, each feature is given an equal footing to begin with. Methods such as the ones described above may then be correctly used to understand where the variability in the data (features) is originating.  
+
+The second reason applies to any algorithm that requires the use of gradient descent (deep learning). Gradient descent is far quicker and more robust on data that has been scaled. Take a simple gradient descent on an error surface given w1 and w2 where the input x1 >> x2. The error surface is highly elliptical, therefore, depending on the starting values of w1 and w2 we will bounce back and forth on the error surface. Where x1 ~ x2 our error surface will be close to circular, therefore we will descend quicker and smoother. In reality, our error surface is highly dimensional, full of local minima, however, the simplistic view taken above is still valid.
+
+Normalisation
+Converts the limits of the data from (fmin, fmax) to (0, 1)
+
+Standardisation
+Converts the mean of the feature to 0 with a variance of 1.
+
+There are other methods too, so which one to choose? The following article explored this in some detail:
+
+https://towardsdatascience.com/normalization-vs-standardization-quantitative-analysis-a91e8a79cebf
+
+Take away message:
+Experiment with multiple scaling methods can dramatically increase your score on classification tasks, even when you hyperparameters are tuned. So, you should consider the scaling method as an important hyperparameter of your model.
+
+It appears there's not a one size fits all solution here. The above actually found some decreases in performance with scaling (this could be the case if there is a correlation between the original scaling of the features and relative importance of that given feature.) The scaling method chosen also has a subtle impact on the shape/structure of the data, and this can result in one being favourable over the other for a given dataset. If time permits, it may be worth testing this as suggested above, as a hyperparameter.
 
 
 
