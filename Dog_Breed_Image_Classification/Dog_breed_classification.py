@@ -115,7 +115,27 @@ X_train, X_Val, y_train, y_val = train_test_split(X[:NUM_IMAGES],
 im = imread(X[20])
 im_tf = tf.constant(im)
 
+#we're using a 224*224 img size due to the fact we will be using transfer learning from published model that uses 224*224
 IMG_SIZE = 224
+
+
+def proc_img(im_path, IMG_SIZE=224):
+    
+    #loading image to variable
+    im = tf.io.read_file(im_path)
+    
+    #modify im variable to tensor with 3 channels (RGB)
+    im = tf.image.decode_jpeg(im, channels=3)
+    
+    #feature scaling - we're using normalisation (0 -> 1) but we could use standardisation (mean = 0, var = 1) 
+    im = tf.image.convert_image_dtype(im, tf.float32)
+    
+    #resize the image - all images will be the same size and hence have the same number of features (pixels)
+    im = tf.image.resize(im, size=[IMG_SIZE, IMG_SIZE])
+    
+    return im
+
+
 
 
 
