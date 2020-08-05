@@ -240,11 +240,6 @@ Note./ we only need to do rotations in log space, and the algorithm typically on
 
 
 
-
------------------------------- GRADIENT DESCENT -------------------------------
-
-
-
 --------------------------------- NAIVE BAYES ---------------------------------
 
 

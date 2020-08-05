@@ -6,7 +6,7 @@ This sheet will cover concepts and techniques that are used in machine learning
 
 
 
------------------------- MULTILAYER PERCEPTRON -------------------------
+--------------------------- MULTILAYER PERCEPTRON -----------------------------
 
 Multilayer perceptron is the simplest form of a neural network. Each layer is formed of a set of neurons with a set of weights connecting each neuron to all the neurons in the following layer.
 
@@ -40,6 +40,18 @@ We now have a neural network framework, but we now need to train it. This is typ
 This cost function is dependent on the calculation of the final layer of neurons and is therefore a function of all the previous weights and biases. 
 
 We can calculate the derivative of this cost function and use the magnitude and direction (in this example in a 13,000-dimensional space) to understand how much each weight and bias needs to change to improve the results. How quickly we learn, and the number of iterations can be set by the user. If we gradient descent too quickly we may overshoot the minima. Note the problem here is in the starting position. A complex cost function, which is dependent on 13,000 variables will have undoubtedly numerous local minima. Therefore, the random starting point will influence which local minima we end up in.
+
+
+
+
+
+
+
+-------------------------------- BATCH SIZE -----------------------------------
+
+When trying to train a deep learning model, we may have thousands, or tens of thousands of images. Unfortunately its unlikley we will be able to load all these images into our GPU memory, and so we train our model in mini-batches. Yann LeCun suggests using no more than a batch size of 32 samples (https://arxiv.org/abs/1804.07612)
+
+
 
 
 

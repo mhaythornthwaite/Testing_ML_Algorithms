@@ -113,4 +113,14 @@ It appears there's not a one size fits all solution here. The above actually fou
 
 
 
+------------------------------ GRADIENT DESCENT -------------------------------
+
+
+
+
+------------------------- STOCHASTIC GRADIENT DESCENT -------------------------
+
+
+
+
 '''
