@@ -61,6 +61,7 @@ Say, using the eigenvalues of the 3 PC's in the above examples, we have PC1 = 79
 Note that is also a powerful dimensionality reduction tool. In the above we could reduce our data to only 2 dimensions, and only lose 6% of the variation. This may instead be chosen as features to train our model.
 
 
+
 ------------------------ LINEAR DISCRIMINANT ANALYSIS -------------------------
 
 Here were not that interested in the feature with the most variation (like PCA is). Instead we're interesting in maximising the separability between classes.
@@ -84,6 +85,7 @@ This process is the same if we have more than 2 dimensions.
 When we have more than 2 classes things change slightly with the distance. Here we calculate the centroid of all the data. Now we measure the distance between each class and the centroid, square and sum. The scatter remains the same.
 
 LDA is similar to PCA in that each axis is ranked. LDA1 is the best axis to separate classes, LDA2 is the second best etc. Just like PCA you can also study the components of each axis in order to understand importance of a given feature. And just like PCA it is possible to understand how much seperability is achieved with the reduced dimensions, analogous to the loading score in PCA.
+
 
 
 ------------------------------- FEATURE SCALING -------------------------------
@@ -111,14 +113,52 @@ It appears there's not a one size fits all solution here. The above actually fou
 
 
 
-
-
 ------------------------------ GRADIENT DESCENT -------------------------------
 
+Gradient descent is an optimisation tool and is used in many algorithms in order to find the minimum of a loss or cost function (for example, in linear regression, we are trying to minimise the sum of square residuals). 
+
+Note./ A loss function applies to a single sample or point whilst the cost function is the average of all the training data / batches. 
+
+Say we wish to fit the line:
+
+y = mx + c 
+
+to a set of observed data, with the loss function defined as the sum of square residuals. We could try every possible combination of m and c. This would be time consuming, so instead we may use gradient descent. Gradient descent starts from an initial random set of values of m and c.
+
+We then take the derivative of the loss function. As we wish to optimise the values of m and c, this is solved with multivariate calculus (multiple partial derivatives). If we were to optimise only say the intercept or the gradient we could use a simple derivative. (Note, if my understanding is correct here, the convention of a line is flipped, whereby m and c are variables and x is a constant. For a given sample, x is constant, where as m and c are unknown.)
+
+When we have two or more derivates of the same function, they are called a gradient. 
+
+Note./ Using least squares to solve for the optimal value of a single variable, simply finds where the slope is equal to zero. In contrast, gradient descent finds the minimum value by taking steps from an initial guess until it reaches the best value. Therefore when it is not possible to solve for when the derivative is equal to zero, gradient descent may be used to.
+
+Once we have calculated our derivate, plugged in our initial values of m and c, and generated a slope, we may use the direction (positive or negative) of this slope to tell us whether to decrease or increase m and c, and the magnitude to inform how much we should change our values. If the derivative is large we will want to take big steps, if it is small we will take small steps. The exact amount that is changed is governed by a user input: the learning rate. If the learning rate is too small it will take a while to converge on a minima. If the rate is too large, we may overshoot our minima and even increase our loss function.
+
+But when do we finish gradient descent? 
+
+There are two options. First gradient descent will stop if the step size is ver small, where:
+
+Step size = derivative * learning rate.
+
+The second option to stop descent is if we have reached a limit in the number of steps. This is a user defined variable but is typically step to 1000.
+
+
+To summarise:
+
+1. Take the derivative of the loss function for each parameter, if we are trying to optimise 100 weights at once, there will be 100 partial derivatives. (take the gradient of the loss function).
+
+2. Pick random values for the parameter or the weights.
+
+3. Plug the values into the derivative (or gradient)
+
+4. Calculate the step size using the slope and the learning rate.
+
+5. Calculate the new weights and repeat from steps 3 through 5 until the step size is small, or the limit in number of steps is reached.
 
 
 
 ------------------------- STOCHASTIC GRADIENT DESCENT -------------------------
+
+This is very similar to gradient descent. This is typically applied where we have a very large number of samples. Instead of calculating the gradient using the many samples, which would take a long time, we take a random subset of the samples and instead use that for gradient descent.
 
 
 
