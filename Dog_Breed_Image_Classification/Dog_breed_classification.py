@@ -103,7 +103,7 @@ y = boolean_labels
 
 NUM_IMAGES = 1000
 
-X_train, X_Val, y_train, y_val = train_test_split(X[:NUM_IMAGES], 
+X_train, X_val, y_train, y_val = train_test_split(X[:NUM_IMAGES], 
                                                   y[:NUM_IMAGES], 
                                                   test_size = 0.2, 
                                                   random_state = 42)
@@ -120,6 +120,9 @@ IMG_SIZE = 224
 
 
 def proc_img(im_path, IMG_SIZE=224):
+    '''
+    Takes an image path, reads the image, converts to a tensor (dtype), resizes to IMG_SIZE*IMG_SIZE, before returning the image.
+    '''
     
     #loading image to variable
     im = tf.io.read_file(im_path)
@@ -136,8 +139,50 @@ def proc_img(im_path, IMG_SIZE=224):
     return im
 
 
+#---------- BATCHES ----------
 
 
+def get_image_label(im_path, label):
+    '''
+    takes an image path and label, processes the image to dtype and returns a tuple: (image, label)
+    '''
+    image = proc_img(im_path)
+    return image, label
+
+test = get_image_label(X[42], y[42])
+
+
+#we now need to use the above to generate a number of batches in the form of a tuple (im, label)
+BATCH_SIZE=32
+
+def create_batches(X, y=None, batch_size=BATCH_SIZE, valid_data=False, test_data=False):
+    ''' 
+    Creates batches out of image (X) and label (y) pairs.
+    Shuffles the data if its training data but does not suffle validation data
+    Also processes test data where no labels are input
+    '''
+    if test_data:
+        data = tf.data.Dataset.from_tensor_slices((tf.constant(X)))
+        data_batch = data.map(proc_img).batch(batch_size)
+        return data_batch
+
+    elif valid_data:
+        data = tf.data.Dataset.from_tensor_slices((tf.constant(X),  
+                                                   tf.constant(y)))
+        data_batch = data.map(get_image_label).batch(batch_size)
+        return data_batch
+    
+    else:
+        data = tf.data.Dataset.from_tensor_slices((tf.constant(X),  
+                                                   tf.constant(y)))
+        data = data.shuffle(buffer_size=len(X))
+        data_batch = data.map(get_image_label).batch(batch_size)
+        return data_batch
+
+train_data = create_batches(X_train, y_train)
+val_data = create_batches(X_val, y_val, valid_data=True)
+
+print(train_data.element_spec, val_data.element_spec)
 
 
 
