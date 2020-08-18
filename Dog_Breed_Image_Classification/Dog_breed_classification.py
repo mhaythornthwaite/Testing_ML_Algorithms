@@ -20,12 +20,15 @@ print(' ---------------- START ---------------- \n')
 #Evaluation on kaggle requires a file with predicted probabilities of each dog breed for each test image. So there will be 120 predictions per image and the evaluation metric on kaggle is log loss
 
 from PIL import Image
-from matplotlib.pyplot import imread
+import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
 import tensorflow as tf
 import tensorflow_hub as hub
+
+plt.close('all')
+
 print('TF Version:', tf.__version__)
 print('TF Hub Version:', hub.__version__, '\n')
 
@@ -112,7 +115,7 @@ X_train, X_val, y_train, y_val = train_test_split(X[:NUM_IMAGES],
 #---------- PREPROCESSING IMAGES ----------
 #Conversion of our images into tensors, and normalising the size, as each pixel is a feature and we require consistent features to both train and use the model.
 
-im = imread(X[20])
+im = plt.imread(X[20])
 im_tf = tf.constant(im)
 
 #we're using a 224*224 img size due to the fact we will be using transfer learning from published model that uses 224*224
@@ -182,8 +185,31 @@ def create_batches(X, y=None, batch_size=BATCH_SIZE, valid_data=False, test_data
 train_data = create_batches(X_train, y_train)
 val_data = create_batches(X_val, y_val, valid_data=True)
 
-print(train_data.element_spec, val_data.element_spec)
+print(train_data.element_spec, '\n', val_data.element_spec)
 
+
+#visualising data batches
+
+def show_25_im(batch):
+    ''' 
+    Displaye images from a supplied data batch
+    '''
+    #converting our batch back into samples and labels
+    images, labels = next(batch.as_numpy_iterator())
+    
+    #plotting our figure
+    fig = plt.figure(figsize=(20, 10))
+    fig.suptitle('All Images in a Single Batch', y=0.955, fontsize=16, fontweight='bold');
+    for i in range(32):
+        ax = plt.subplot(4, 8, i+1)
+        plt.imshow(images[i])
+        plt.title(unique_breeds[labels[i].argmax()])
+        plt.axis('off')
+        
+    return fig
+        
+#batch_visualisation = show_25_im(train_data)
+#batch_visualisation.savefig('figures/batch_visualisation.png')
 
 
 # ----------------------------------- END -------------------------------------
