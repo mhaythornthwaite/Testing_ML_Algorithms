@@ -212,6 +212,25 @@ def show_25_im(batch):
 #batch_visualisation.savefig('figures/batch_visualisation.png')
 
 
+
+#------------------------------ BUILDING A MODEL ------------------------------
+
+#Before we start we need to define the input and output shape of our model (image and label both in the form of tensors respectively, and the URL of the initial model we want to use (transfer learning)
+
+INPUT_SHAPE = [None, IMG_SIZE, IMG_SIZE, 3] #[batch, height, width, channels]
+OUTPUT_SHAPE = len(unique_breeds)  #number of unique labels
+
+#using mobilenet_v2 and testing different depth multipliers. The depth multiplier is an important hyperparameter and controls how many channels are in each layer (https://machinethink.net/blog/mobilenet-v2/)
+
+depth_mult_1_00 = 'https://tfhub.dev/google/imagenet/mobilenet_v2_100_224/classification/4'
+depth_mult_0_75 = 'https://tfhub.dev/google/imagenet/mobilenet_v2_075_224/classification/4'
+depth_mult_0_50 = 'https://tfhub.dev/google/imagenet/mobilenet_v2_050_224/classification/4'
+depth_mult_0_35 = 'https://tfhub.dev/google/imagenet/mobilenet_v2_035_224/classification/4'
+
+MODEL_URL = depth_mult_0_35
+
+
+
 # ----------------------------------- END -------------------------------------
 
 print(' ----------------- END ----------------- ')
