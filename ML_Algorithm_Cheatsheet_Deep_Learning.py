@@ -8,9 +8,9 @@ This sheet will cover concepts and techniques that are used in machine learning
 
 ----------------------------- QUICK DEFINITIONS -------------------------------
 
-NN & ANN - An artificial neural network and a neural network are the same thing, the artifical originates from the fact we attempt to simulate neurons that make up the human brain.
+NN & ANN - An artificial neural network and a neural network are the same thing, the artificial originates from the fact we attempt to simulate neurons that make up the human brain.
 
-Deep Learning - Deep learning simply means our network has more than one hidden layer. Therefore if our convolutional neural network (CNN) or our recurrent neural network (RNN), or our Autoencoder etc. has more than one hidden layer, its a deep leaning model. 
+Deep Learning - Deep learning simply means our network has more than one hidden layer. Therefore, if our convolutional neural network (CNN) or our recurrent neural network (RNN), or our Autoencoder etc. has more than one hidden layer, it’s a deep leaning model. 
 
 
 --------------------------- MULTILAYER PERCEPTRON -----------------------------
@@ -44,7 +44,7 @@ ReLU - f(x) = max(0, x) - simply put all negative values of x are set to 0 and a
 
 ReLU activation function has become popular recently with researchers demonstrating in 2011 it's ability to better train DNN. Some advantages include:
 - sparse activation (only ~50% of neurons with ReLU will be activated due to x<0)
-- fewer vanishing gradient problems compared to saturating functions such as the ones above which saturate in both directions. During backpropagation, each of the NN weights recieves an update proportional to the partial derivative of the error function with respect to the current weight. When we approach saturation, a change to the weight has a very small impact on the output of the neuron, and therefore the gadient decreases exponentially as no more can be done to change the error. 
+- fewer vanishing gradient problems compared to saturating functions such as the ones above which saturate in both directions. During backpropagation, each of the NN weights receives an update proportional to the partial derivative of the error function with respect to the current weight. When we approach saturation, a change to the weight has a very small impact on the output of the neuron, and therefore the gradient decreases exponentially as no more can be done to change the error. 
 --------------------
 
 This can be nicely re-written into a matrix expression for calculating all the neurons in a given layer. Sticking with the same example and assuming the first hidden layer has 16 neurons we would have the following matrix expression
@@ -63,7 +63,21 @@ This cost function is dependent on the calculation of the final layer of neurons
 We can calculate the derivative of this cost function and use the magnitude and direction (in this example in a 13,000-dimensional space) to understand how much each weight and bias needs to change to improve the results. How quickly we learn, and the number of iterations can be set by the user. If we gradient descent too quickly we may overshoot the minima. Note the problem here is in the starting position. A complex cost function, which is dependent on 13,000 variables will have undoubtedly numerous local minima. Therefore, the random starting point will influence which local minima we end up in.
 
 
+------------------------ CONVOLUTIONAL NEURAL NETWORKS ------------------------
 
+A convolutional neural network is similar to a standard neural network, but with the addition of convolutional layers. 
+
+Take our MLP described above, whereby we used a NN to train image classification of handwritten numbers in 28*28 sized images. We vectorize this to form an input layer 784 neurons long. Now consider we have a complex RGB image, 224*244. With three colour channels, this multiplies to over 150,000 features or input neurons. Not only is training hugely time consuming, with likely only a small number of samples in comparison to the number of features, we are likely to overfit the model. It is for this reason, initial attempts on image recognition using MLP struggled to attain good results.
+
+It was in 2012, that Alex Krizhevsky, with AlexNet, pioneered convolutional neural networks, drastically increasing the accuracy of deep learning models.
+
+In CNN, layers are no longer represented by vectors, but instead by tensors in 3 dimensions, with a width, height and depth (already this makes more sense as pixels next to one another matter - in MLP this is vectorized so this information is lost). Take the 224*224 RGB image - this has an input layer of [224, 224, 3]. 
+
+When performing convolution, we take the initial layer (may be input layer or hidden layer) and run a filter over the data to produce what’s called a feature map. Say we use a single filter of size 3*3*3. When we run this over our initial layer of 224*224*3 we receive an output of 222*222*1. Say we design a set of filters to detect edges, and we have 8 of them. Each filter is passed over the data to produce 8 feature maps, which are subsequently patched together to produce the convolutional layer of size 222*222*8. 
+
+An ideal CNN would have initial convolutional layers that detected gross features, such as edges, with later layers honing in on specific 'features' (I'm using features here in a human sense) such as eyes, ears etc. that may be important in the final classification.
+
+In reality, we don’t design these convolutional filters. The filters are treated like weights in the backpropagation stage of training and are optimised for us. Again, in reality when studying these filters or the feature maps, we may not see something interpretable as outlined above (edges in the initial layers, specific features such as eyes in the deeper layers.)
 
 
 
