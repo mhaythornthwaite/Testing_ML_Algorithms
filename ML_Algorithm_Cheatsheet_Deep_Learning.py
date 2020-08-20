@@ -84,7 +84,7 @@ Hyperparameters
 
 There are a number of hyperparameters that need to be defined for each convolutional layer. These include:
 
-* Spatial extent - which is equal to the height and width of the filters (kernels) used. Note that if we have multiple filters in a single convolutional layer, we need to define all the filters spatial extent (most likely the same for all in a given layer). Generally, filter sizes are kept small (3*3 or 5*5) and sometimes larger (7*7) filters may be used but only in the first layer. Smaller filters have the advantage of being more representative of the input data whilst reducing the number of parameters (or features). 
+* Spatial extent (e) - which is equal to the height and width of the filters (kernels) used. Note that if we have multiple filters in a single convolutional layer, we need to define all the filters spatial extent (most likely the same for all in a given layer). Generally, filter sizes are kept small (3*3 or 5*5) and sometimes larger (7*7) filters may be used but only in the first layer. Smaller filters have the advantage of being more representative of the input data whilst reducing the number of parameters (or features). 
 
 * Zero Padding (p) - This is the width/height of zeros around each slice. Say we have an input RGB image (224*224*3) and we place a padding = 1 the new tensor size will be 226*226*3. This is effectively smoothing the edges of the image as opposed to effectively clipping them with a filter. Typically, zero padding is set to keep the output volumes height and width the same. So, a 3*3 filter needs p=1, 5*5 filter needs p=2 etc.
 
@@ -93,6 +93,23 @@ There are a number of hyperparameters that need to be defined for each convoluti
 * Bias (b) - Similar to bias in conventional neural nets, bias in convolutional neural nets is a single term which is added to each component in the convolution
 ---------------
 
+-----------------
+Max Pooling Layer
+
+A max pooling layer is sometimes used directly after a convolutional layer, with the aim to significantly reduce dimensionality of feature maps, retaining only important features. 
+
+We first split the feature map up into equally sized tiles (say 2*2). We compute the maximum value in each tile which is used as a single cell or parameter in the condensed feature map. 
+
+There are only two hyperparameters to set with a max pooling layer:
+
+* Spatial extent (e) - Same as described above but defining the size of the tile as opposed to the size of the filter.
+
+* Stride (s) - Same as defined above but is the stride for the tile and not the filter. 
+
+There are only two major variations typically used for the pooling layer. The first is a non-overlapping layer with s=2 and e=2, with the second being an overlapping layer with s=2 and e=3. The obvious difference is that overlapping layers may get feature repetition, effectively doubling the importance of a given feature. This may or may not be desirable.
+
+N.B./ A property of a pooling layer is that it is locally invariant. That is, that if the inputs shift around a small amount the output of the max pooling layer may stay the same. This can be very useful because our network will be less subject to noise, the output of the pooling layer may be the same even if the images differs in some way. Too much invariance, however, can destroy our networks ability to differentiate important information that should result in a different classification.
+-----------------
 
 
 
