@@ -109,6 +109,8 @@ There are only two hyperparameters to set with a max pooling layer:
 There are only two major variations typically used for the pooling layer. The first is a non-overlapping layer with s=2 and e=2, with the second being an overlapping layer with s=2 and e=3. The obvious difference is that overlapping layers may get feature repetition, effectively doubling the importance of a given feature. This may or may not be desirable.
 
 N.B./ A property of a pooling layer is that it is locally invariant. That is, that if the inputs shift around a small amount the output of the max pooling layer may stay the same. This can be very useful because our network will be less subject to noise, the output of the pooling layer may be the same even if the images differs in some way. Too much invariance, however, can destroy our networks ability to differentiate important information that should result in a different classification.
+
+Also note that our pooling layer is generated with a pre-defined function. There is no optimisation and therefore we are not adding any additional dimensionality to our gradient calculations during back propagation.
 -----------------
 
 
