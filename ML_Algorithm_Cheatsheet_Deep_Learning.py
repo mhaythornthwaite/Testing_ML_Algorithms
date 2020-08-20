@@ -79,6 +79,21 @@ An ideal CNN would have initial convolutional layers that detected gross feature
 
 In reality, we don’t design these convolutional filters. The filters are treated like weights in the backpropagation stage of training and are optimised for us. Again, in reality when studying these filters or the feature maps, we may not see something interpretable as outlined above (edges in the initial layers, specific features such as eyes in the deeper layers.)
 
+---------------
+Hyperparameters
+
+There are a number of hyperparameters that need to be defined for each convolutional layer. These include:
+
+* Spatial extent - which is equal to the height and width of the filters (kernels) used. Note that if we have multiple filters in a single convolutional layer, we need to define all the filters spatial extent (most likely the same for all in a given layer). Generally, filter sizes are kept small (3*3 or 5*5) and sometimes larger (7*7) filters may be used but only in the first layer. Smaller filters have the advantage of being more representative of the input data whilst reducing the number of parameters (or features). 
+
+* Zero Padding (p) - This is the width/height of zeros around each slice. Say we have an input RGB image (224*224*3) and we place a padding = 1 the new tensor size will be 226*226*3. This is effectively smoothing the edges of the image as opposed to effectively clipping them with a filter. Typically, zero padding is set to keep the output volumes height and width the same. So, a 3*3 filter needs p=1, 5*5 filter needs p=2 etc.
+
+* Stride (s)- This is the distance the filter jumps/moves over the data with each application of the filter. When stride = 1 the filter moves with a single unit vector in the column or row axis. If stride = 2, then with each application of the filter, our filters moves with a vector=2, i.e. it jumps two spaces along a row or a column. This is sometimes called down sampling as we are reducing the size of the output by a factor of 4. Take a filter with a size of 3*3 an input image 8*8. Where stride=1 the output will be 6*6 = 36 features, where stride=2 our output will be 3*3 = 9 features. Typically however, stride is set to 1 to capture all useful information in the feature maps.
+
+* Bias (b) - Similar to bias in conventional neural nets, bias in convolutional neural nets is a single term which is added to each component in the convolution
+---------------
+
+
 
 
 
