@@ -2,7 +2,7 @@
 
 -------------------------- ML ALGORITHM CHEATSHEET ----------------------------
 
-This sheet will cover concepts and techniques that are used in machine learning 
+This sheet will cover concepts and techniques that are used in machine learning, specifically neural networks and deep learning
 
 
 
@@ -60,7 +60,7 @@ We now have a neural network framework, but we now need to train it. This is typ
 
 This cost function is dependent on the calculation of the final layer of neurons and is therefore a function of all the previous weights and biases. 
 
-We can calculate the derivative of this cost function and use the magnitude and direction (in this example in a 13,000-dimensional space) to understand how much each weight and bias needs to change to improve the results. How quickly we learn, and the number of iterations can be set by the user. If we gradient descent too quickly we may overshoot the minima. Note the problem here is in the starting position. A complex cost function, which is dependent on 13,000 variables will have undoubtedly numerous local minima. Therefore, the random starting point will influence which local minima we end up in.
+We can calculate the derivative of this cost function and use the magnitude and direction (in this example in a 13,000-dimensional space) to understand how much each weight and bias needs to change to improve the results (this is achieved with back propagation - discussed later). How quickly we learn, and the number of iterations can be set by the user. If we gradient descent too quickly we may overshoot the minima. Note the problem here is in the starting position. A complex cost function, which is dependent on 13,000 variables will have undoubtedly numerous local minima. Therefore, the random starting point will influence which local minima we end up in.
 
 
 ------------------------ CONVOLUTIONAL NEURAL NETWORKS ------------------------
@@ -112,6 +112,45 @@ N.B./ A property of a pooling layer is that it is locally invariant. That is, th
 
 Also note that our pooling layer is generated with a pre-defined function. There is no optimisation and therefore we are not adding any additional dimensionality to our gradient calculations during back propagation.
 -----------------
+
+
+
+
+
+--------------------------- CONCEPTS & DEFINITIONS ----------------------------
+
+In this section we we cover a range of concpts or components of deep learning models in a little more detail.
+
+
+------------------------------ BACKPROPAGATION --------------------------------
+
+In 1986 a paper by Rumelhart, Hinton and Williams published a paper that introduced back propagation, a method that could calculate the gradient of the networks error with regard to every single modelparameter, in only two passes through the network (one forward and one backward). Once we have the gradients, we can perform simple gradient descent to optimise the model.
+
+Below is a step by step guide to the process of backpropagation:
+
+- We go through each mini-batch at a time (say 32 samples or instances) running the full backpropagation algorithm. This is called a single iteration. Once we go through every mini-batch in the training set, this is called an epoch. so if we have 320 samples and we split our data into batches of 32 samples, we will have 10 iterations every epoch. 
+
+- We take A mini-batch and pass all instances in that batch into the input layer of the network. These are fed through each hidden layer until we reach the final layer and make a prediction. This is called the forward pass, and is almost identical to making a prediction with the model, with the only difference being all intermediate results are preserved since they are required for the backward pass.  
+
+- Next the algorithm measures the networks error using a loss function.
+
+- We then compute how much each output connection contributed to the error, which is done by applying the chain rule. 
+
+N.B./ The chain rule is a basic rule in calculus which allows us to differentiate a composite function, by that I mean y = f(g(x)). Here we set u = g(x) and now we can apply the limit approximation dy/dx = dy/du * du/dx
+We need this because the output of our neuron in an input into the loss function and is therefore a composite.
+
+- We then measure how much error contribution come from each connection in the layer below working backwards until we reach the input layer  
+
+
+
+N.B./ finish with the help of these:
+
+https://www.youtube.com/watch?v=Ilg3gGewQ5U
+https://www.youtube.com/watch?v=tIeHLnjs5U8
+
+
+----------------------- EXPLODING & VANISHING GRADIENT ------------------------
+
 
 
 
