@@ -139,14 +139,83 @@ Below is a step by step guide to the process of backpropagation:
 N.B./ The chain rule is a basic rule in calculus which allows us to differentiate a composite function, by that I mean y = f(g(x)). Here we set u = g(x) and now we can apply the limit approximation dy/dx = dy/du * du/dx
 We need this because the output of our neuron in an input into the loss function and is therefore a composite.
 
-- We then measure how much error contribution come from each connection in the layer below working backwards until we reach the input layer  
+- We then measure how much error contribution come from each connection in the layer below working backwards until we reach the input layer. This is repeated for each mini-batch until either converge on a result in gradient descent or we reach a maximum number of iteration (both thresholds are user defined.)
+
+
+--------
+Calculus
+
+In this section I will go through a calculus example where we only have one neuron in each layer. This is to simplify the problem and allow us to easily write down the various equations involved.
+
+First lets look at the layers:
+
+... a(L-2)  >  a(L-1)  >  a(L)
+
+Where a(L) is the last neuron (the one making the prediction), a(L-1) is the second to last neuron, a(L-2) is the third to last neuron etc. Note here that (L) is a subscript, it simply denotes the last neuron (L = length/number of layers)
+
+Now in this case the cost function is simple, say we use mean square error, we get:
+
+C = (a(L) - y)^2
+
+where C is the cost function and y is the desired prediction.
+
+Lets now take a closer look at what makes up our prediction: a(L). This is reliant on the weight, bias and previous neurons activation. Hence the equation governing a(L) is:
+
+a(L) = sigma(z(L))
+
+z(L) = w(L) * a(L-1) + b(L)
+
+Note that here we have two equations as we pass the output: z(L) through a non-linear function (activation function) such as the sigma or ReLU. In this case we're using the sigmoid function.
+
+We've now set everything up, ready to understand how changing our w(L) will change our cost function: C. For this we will need the chain rule:
+
+dC/dw(L) = dz(L)/dw(L) * da(L)/dz(L) * dC/da(L)
+
+Note that all the deltas a partial derivative deltas, and our composite function which connects the cost function with the w(L) has three individual functions and therefore is formed of three partial derivatives.
+
+Lets now compute each of the individual derivatives:
+
+C = (a(L) - y)^2
+dC/da(L) = 2 * (a(L) -y)
+
+a(L) = sigma(z(L))
+da(L)/dz(L) = sigma'(z(L))   (derivative of our non-linear function)
+
+z(L) = w(L) * a(L-1) + b(L)
+dz(L)/dw(L) = a(L-1)
+
+So what does this all mean? Well it means our sensitivity of changing the weight term is reliant on both the current neuron and previous neuron.
+
+
+Ok so now we want to move one layer down, we wish to know how the cost function changes with respect the second weight down the layer. Things intuitively become more complex here, because we're now reliant on the parameters in the layer above which feed into the final prediction. 
+
+Lets setup our problemby writing out the 5 equations which take us from the cost function to the weight in the second to last layer.
+
+C = (a(L) - y)^2
+
+a(L) = sigma(z(L))
+
+z(L) = w(L) * a(L-1) + b(L)
+
+a(L-1) = sigma(z(L-1))
+
+z(L-1) = w(L-1) * a(L-2) + b(L-1)
+
+Now we use the chain rule and differentiate each one of these equations to get us the desired differential of dC/dw(L-1)
+
+dC/dw(L-1) = dz(L-1)/dw(L-1)*da(L-1)/dz(L-1)*dz(L)/da(L-1)*da(L)/dz(L)*dC/da(L)
+
+This looks horribly complicated but its not too bad. Let re-write it 
+
+dC      = dz(L-1) * da(L-1) * dz(L)   * da(L) * dC
+dw(L-1)   dw(L-1)   dz(L-1)   da(L-1)   dz(L)   da(L)
+
+
+Notice how the diagonals cancel out. This is now a nice stepping stone for understanding the exploding and vanishing gradient. Each time we step down a layer we are adding tow more partial differentials to the gradient, creating a more and more unstable result, due to the fact we are reliant on all the weights and biases in the layers above.
+--------
 
 
 
-N.B./ finish with the help of these:
-
-https://www.youtube.com/watch?v=Ilg3gGewQ5U
-https://www.youtube.com/watch?v=tIeHLnjs5U8
 
 
 ----------------------- EXPLODING & VANISHING GRADIENT ------------------------
