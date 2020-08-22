@@ -124,13 +124,13 @@ In this section we we cover a range of concpts or components of deep learning mo
 
 ------------------------------ BACKPROPAGATION --------------------------------
 
-In 1986 a paper by Rumelhart, Hinton and Williams published a paper that introduced back propagation, a method that could calculate the gradient of the networks error with regard to every single modelparameter, in only two passes through the network (one forward and one backward). Once we have the gradients, we can perform simple gradient descent to optimise the model.
+In 1986 a paper by Rumelhart, Hinton and Williams published a paper that introduced back propagation, a method that could calculate the gradient of the networks error with regard to every single model parameter, in only two passes through the network (one forward and one backward). Once we have the gradients, we can perform simple gradient descent to optimise the model.
 
 Below is a step by step guide to the process of backpropagation:
 
-- We go through each mini-batch at a time (say 32 samples or instances) running the full backpropagation algorithm. This is called a single iteration. Once we go through every mini-batch in the training set, this is called an epoch. so if we have 320 samples and we split our data into batches of 32 samples, we will have 10 iterations every epoch. 
+- We go through each mini-batch at a time (say 32 samples or instances) running the full backpropagation algorithm. This is called a single iteration. Once we go through every mini-batch in the training set, this is called an epoch. So, if we have 320 samples and we split our data into batches of 32 samples, we will have 10 iterations every epoch. 
 
-- We take A mini-batch and pass all instances in that batch into the input layer of the network. These are fed through each hidden layer until we reach the final layer and make a prediction. This is called the forward pass, and is almost identical to making a prediction with the model, with the only difference being all intermediate results are preserved since they are required for the backward pass.  
+- We take A mini-batch and pass all instances in that batch into the input layer of the network. These are fed through each hidden layer until we reach the final layer and make a prediction. This is called the forward pass and is almost identical to making a prediction with the model, with the only difference being all intermediate results are preserved since they are required for the backward pass.  
 
 - Next the algorithm measures the networks error using a loss function.
 
@@ -147,7 +147,7 @@ Calculus
 
 In this section I will go through a calculus example where we only have one neuron in each layer. This is to simplify the problem and allow us to easily write down the various equations involved.
 
-First lets look at the layers:
+First let’s look at the layers:
 
 ... a(L-2)  >  a(L-1)  >  a(L)
 
@@ -159,21 +159,21 @@ C = (a(L) - y)^2
 
 where C is the cost function and y is the desired prediction.
 
-Lets now take a closer look at what makes up our prediction: a(L). This is reliant on the weight, bias and previous neurons activation. Hence the equation governing a(L) is:
+Let us now take a closer look at what makes up our prediction: a(L). This is reliant on the weight, bias, and previous neurons activation. Hence the equation governing a(L) is:
 
 a(L) = sigma(z(L))
 
 z(L) = w(L) * a(L-1) + b(L)
 
-Note that here we have two equations as we pass the output: z(L) through a non-linear function (activation function) such as the sigma or ReLU. In this case we're using the sigmoid function.
+Note that here we have two equations as we pass the output: z(L) through a non-linear function (activation function) such as the sigma or ReLU. In this case we are using the sigmoid function.
 
 We've now set everything up, ready to understand how changing our w(L) will change our cost function: C. For this we will need the chain rule:
 
 dC/dw(L) = dz(L)/dw(L) * da(L)/dz(L) * dC/da(L)
 
-Note that all the deltas a partial derivative deltas, and our composite function which connects the cost function with the w(L) has three individual functions and therefore is formed of three partial derivatives.
+Note that all the deltas are partial derivative deltas, and our composite function which connects the cost function with the w(L) has three individual functions and therefore is formed of three partial derivatives.
 
-Lets now compute each of the individual derivatives:
+Let’s now compute each of the individual derivatives:
 
 C = (a(L) - y)^2
 dC/da(L) = 2 * (a(L) -y)
@@ -189,7 +189,7 @@ So what does this all mean? Well it means our sensitivity of changing the weight
 
 Ok so now we want to move one layer down, we wish to know how the cost function changes with respect the second weight down the layer. Things intuitively become more complex here, because we're now reliant on the parameters in the layer above which feed into the final prediction. 
 
-Lets setup our problemby writing out the 5 equations which take us from the cost function to the weight in the second to last layer.
+Let’s setup our problem by writing out the 5 equations which take us from the cost function to the weight in the second to last layer.
 
 C = (a(L) - y)^2
 
@@ -211,8 +211,9 @@ dC      = dz(L-1) * da(L-1) * dz(L)   * da(L) * dC
 dw(L-1)   dw(L-1)   dz(L-1)   da(L-1)   dz(L)   da(L)
 
 
-Notice how the diagonals cancel out. This is now a nice stepping stone for understanding the exploding and vanishing gradient. Each time we step down a layer we are adding tow more partial differentials to the gradient, creating a more and more unstable result, due to the fact we are reliant on all the weights and biases in the layers above.
+Notice how the diagonals cancel out. This is now a nice steppingstone for understanding the exploding and vanishing gradient. Each time we step down a layer we are adding two more partial differentials to the gradient, creating a more and more unstable result, due to the fact we are reliant on all the weights and biases in the layers above.
 --------
+
 
 
 
