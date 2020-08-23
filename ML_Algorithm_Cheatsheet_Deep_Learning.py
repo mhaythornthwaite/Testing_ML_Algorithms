@@ -38,7 +38,13 @@ sigma(x) = 1 / (1 + e^-x)
 
 Note that the sigma or sigmoid function is not the only possible activation function. Alternatives include:
 
+softmax(x) = e^x(i) / sum(e^x(i)) - This is typically used as the activation function in the last layer in order to predict probabilities. The benefit is that is normalises the outputs so the sum of the probabilities always equal one. A loose explanation for the requirement for an exponential is the exp roughly cancels out the log in the cross-entropy loss. 
+
+https://stackoverflow.com/questions/17187507/why-use-softmax-as-opposed-to-standard-normalization
+
+
 tanh(x) which transforms x to between -1 to 1, the advantage being that tanh(0) = 0.
+
 
 ReLU - f(x) = max(0, x) - simply put all negative values of x are set to 0 and all positive values are retained. 
 
@@ -235,11 +241,81 @@ This is covered in the concept sheet, however, in this I will quickly cover the 
 
 
 
--------------------------------- BATCH SIZE -----------------------------------
+--------------------------------- BATCH SIZE ----------------------------------
 
 When trying to train a deep learning model, we may have thousands, or tens of thousands of images. Unfortunately its unlikley we will be able to load all these images into our GPU memory, and so we train our model in mini-batches. Yann LeCun suggests using no more than a batch size of 32 samples (https://arxiv.org/abs/1804.07612)
 
 
+
+---------------------------- COST & LOSS FUNCTIONS ----------------------------
+
+Loss function is usually a function defined on a data point, prediction, and label
+
+Cost function is usually more general. It might be a sum of loss functions over your training set plus some model complexity penalty (regularisation)
+
+Regressions Cost Functions
+
+MSE - Mean Square Error 
+MSE = sum( (y(i) - t(i))^2 ) / n
+where y(i) is the predicted and t(i) is the true value
+
+MAE - Mean Absolute Error
+MAE = sum( |y(i) - t(i)| ) / n
+where y(i) is the predicted and t(i) is the true value
+
+Mean Bias Error
+MAE = sum( y(i) - t(i) ) / n
+where y(i) is the predicted and t(i) is the true value
+
+
+Classification Cost Functions
+
+
+Hinge / Multi Class SVM Loss Function
+
+SVM = sum( max(0, y(i) - t + 1) )
+where y(i) is the predicted probability of the ith class and y is the predicted probability of the true class.
+
+So say we have three classes, win, draw and lose. We get the following output from our classifier, and we know win is the correct prediction:
+Win: 0.4
+Draw: -0.3
+Loss: 1.8
+
+SVM = max(0, -0.3 - 0.4 + 1) + max(0, 1.8 - 0.4 + 1)
+SVM = max(0, 0.3) + max(0, 2.4) = 2.7
+So the loss of this given sample is 2.7 which is fairly high so bad (high loss is bad)
+
+Note to make this our cost function we need to sum all the individual losses for all the samples in the dataset and average.
+
+
+Cross-Entropy Loss Function
+
+CEL = - sum( t(i) . log(y(i) )
+where t(i) is the true value of the ith class and y(i) is the predicted value of the ith class.
+
+Note that if we are looking at one hot classification, where we are only interested in classifying the image as a single class, this equation simplifies into the following:
+
+- log( y(i) )
+
+Lets explain this with the use of two vectors:
+
+t = [0
+	 1
+	 0
+	 0]
+
+y = [0.1
+     0.6
+     0.3
+     0]
+
+Were i=[0,2,3], t(i)=0 and therefore the multiplication in the cross-entropy function results in it equalling zero. 
+
+Then when i=1, t(i)=1 and therefore CEL = - (1 * log(0.6)) = log(0.6)
+
+This is called categorical cross-entropy and results in our loss simply being the predicted probability of the true class/category.
+
+In effect cross entropy loss penalises heavily the predictions that are confident but wrong.
 
 
 
