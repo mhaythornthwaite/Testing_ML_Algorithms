@@ -26,6 +26,8 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 import tensorflow as tf
 import tensorflow_hub as hub
+from tensorflow import keras
+from tensorflow.keras import layers
 
 plt.close('all')
 
@@ -83,7 +85,7 @@ training_labels['id_int'] = training_labels_id_int
 
 
 #ONE HOT ENCODING APPROACH
-#turning every sample into a boolean array and then turning the boolean array into a binary array
+#turning every sample into a boolean array and then turning the boolean array into a binary array (or a vector filled with zeros and a single 1)
 
 unique_breeds = np.unique(training_labels['breed'])
 
@@ -165,27 +167,27 @@ def create_batches(X, y=None, batch_size=BATCH_SIZE, valid_data=False, test_data
     Also processes test data where no labels are input
     '''
     if test_data:
-        data = tf.data.Dataset.from_tensor_slices((tf.constant(X)))
-        data_batch = data.map(proc_img).batch(batch_size)
+        dataset = tf.data.Dataset.from_tensor_slices((tf.constant(X)))
+        data_batch = dataset.map(proc_img).batch(batch_size)
         return data_batch
 
     elif valid_data:
-        data = tf.data.Dataset.from_tensor_slices((tf.constant(X),  
+        dataset = tf.data.Dataset.from_tensor_slices((tf.constant(X),  
                                                    tf.constant(y)))
-        data_batch = data.map(get_image_label).batch(batch_size)
+        data_batch = dataset.map(get_image_label).batch(batch_size)
         return data_batch
     
     else:
-        data = tf.data.Dataset.from_tensor_slices((tf.constant(X),  
+        dataset = tf.data.Dataset.from_tensor_slices((tf.constant(X),  
                                                    tf.constant(y)))
-        data = data.shuffle(buffer_size=len(X))
-        data_batch = data.map(get_image_label).batch(batch_size)
+        dataset = dataset.shuffle(buffer_size=len(X))
+        data_batch = dataset.map(get_image_label).batch(batch_size)
         return data_batch
 
 train_data = create_batches(X_train, y_train)
 val_data = create_batches(X_val, y_val, valid_data=True)
 
-print(train_data.element_spec, '\n', val_data.element_spec)
+print('\n Training data in batch format \n', train_data.element_spec, '\n\n Validation data in batch format \n', val_data.element_spec, '\n')
 
 
 #visualising data batches
@@ -228,6 +230,31 @@ depth_mult_0_50 = 'https://tfhub.dev/google/imagenet/mobilenet_v2_050_224/classi
 depth_mult_0_35 = 'https://tfhub.dev/google/imagenet/mobilenet_v2_035_224/classification/4'
 
 MODEL_URL = depth_mult_0_35
+
+#N.B./ we're going to be using the keras sequential API to train and build our networks. This is the simplest API available, which allows us to build our network layer by layer. By this we mean the layer L-3 is connected to only L-4 and feeds into L-2. There is a functional API available that is more flexible, it allows layers to connect to more than just the previous and next layers. With this it becomes possible to build very complex models such as siamese and residual networks
+
+def build_model(input_shape=INPUT_SHAPE, output_shape=OUTPUT_SHAPE, model_url=MODEL_URL):
+    
+    #setting up our layers ordinarily you may use layers.Dense() to set up each layer, but in this case we are using transfer learning and so all our layers are already defined in the hub.KerasLayer()
+    model = tf.keras.Sequential([
+        hub.KerasLayer(MODEL_URL),
+        tf.keras.layers.Dense(units=output_shape, activation='softmax')
+    ])
+
+    #compile the model, definining our loss function
+    model.compile(
+        loss = tf.keras.losses.CategoricalCrossentropy(),
+        optimizer = tf.keras.optimizers.Adam(),
+        metrics='accuracy'
+    )
+    
+    #building the model
+    model.build(input_shape)
+    
+    return model
+
+model = build_model()
+model.summary()
 
 
 
