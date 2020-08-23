@@ -128,6 +128,8 @@ In 1986 a paper by Rumelhart, Hinton and Williams published a paper that introdu
 
 Below is a step by step guide to the process of backpropagation:
 
+- First we initialise our network with a random set of weights and biases. It is important that this is random as setting all the parameters to 0 will effectively result in layers that behave like they are only one neuron long.
+
 - We go through each mini-batch at a time (say 32 samples or instances) running the full backpropagation algorithm. This is called a single iteration. Once we go through every mini-batch in the training set, this is called an epoch. So, if we have 320 samples and we split our data into batches of 32 samples, we will have 10 iterations every epoch. 
 
 - We take A mini-batch and pass all instances in that batch into the input layer of the network. These are fed through each hidden layer until we reach the final layer and make a prediction. This is called the forward pass and is almost identical to making a prediction with the model, with the only difference being all intermediate results are preserved since they are required for the backward pass.  
@@ -139,7 +141,7 @@ Below is a step by step guide to the process of backpropagation:
 N.B./ The chain rule is a basic rule in calculus which allows us to differentiate a composite function, by that I mean y = f(g(x)). Here we set u = g(x) and now we can apply the limit approximation dy/dx = dy/du * du/dx
 We need this because the output of our neuron in an input into the loss function and is therefore a composite.
 
-- We then measure how much error contribution come from each connection in the layer below working backwards until we reach the input layer. This is repeated for each mini-batch until either converge on a result in gradient descent or we reach a maximum number of iteration (both thresholds are user defined.)
+- We then measure how much error contribution come from each connection in the layer below working backwards until we reach the input layer. This is repeated for each mini-batch until we either converge on a result in gradient descent or we reach a maximum number of iteration (both thresholds are user defined.)
 
 
 --------
@@ -215,7 +217,15 @@ Notice how the diagonals cancel out. This is now a nice steppingstone for unders
 --------
 
 
+------------------------------ GRADIENT DESCENT -------------------------------
 
+This is covered in the concept sheet, however, in this I will quickly cover the 3 most common variants used in training a network.
+
+* Batch Gradient Descent - This is standard gradient descent. Here we calculate the error for each sample in the training dataset and only update the model after all samples have been evaluated (#iterations = #epochs). This algorithm will require fewer updates to the model but descend down the error surface very slowly. The error surface will be the same each time and therefore will converge on the nearest local minima. We often will need to place all samples into memory in order to run this algorithm.
+
+* Mini-batch Gradient Descent - This is the most commonly used method as it combines the advantages of each end member approach. Here we split our data into mini-batches (typically no more than 32) and run the backpropagation algorithm and gradient descent on just the mini-batch before updating the model. This is a single iteration (#iteration > #epochs). As we are training with different data in each mini-batch, the error surface will be different with each iteration. Therefore there is a level of randomness in how we descend. The samples in a given mini-batch may not be representative of the entire dataset, and therefore our error may increase from one iteration to the next. The larger the mini-batch the less likely this is to be the case. As we are descending stochastically, we are more likely to avoid local minima: a local minima in one mini-batch error surface may not be a minima in another, allowing us to more freely descend and converge on a global minima.
+
+* Stochastic Gradient Descent - In this variation, we run backpropagation and gradient descent on a single sample before updating the model (#iterations >> #epochs). The noisy update process can allow us to efficiently avoid local minima in the same way as described above. Updating the model after every sample is analysed is computationally expensive and will take longer to train a model. The training parameters (weights and biases) will also jump around, resulting in a higher variance over the training epochs.
 
 
 
