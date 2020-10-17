@@ -32,6 +32,21 @@ from tensorflow.python.keras.callbacks import TensorBoard
 
 plt.close('all')
 
+
+#---------- SETTING VERBOSITY ----------
+
+tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
+tf.get_logger().setLevel('ERROR')
+tf.autograph.set_verbosity(3)
+
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+
+
+#---------- CHECKING TF VERSION AND GPU ----------
+
+#note that to allow tensorflow to be compatible with the GPU cudnn==7.6.4 was installed in the environment. 
+
 print('TF Version:', tf.__version__)
 print('TF Hub Version:', hub.__version__, '\n')
 
@@ -50,13 +65,13 @@ print(training_labels.head())
 
 #inspecting an image 
 test_image = Image.open('train/000bec180eb18c7604dcecc8fe0dba07.jpg')
-test_image.show()
+#test_image.show()
 
 #creating list of ID's using list comprehension so we can use filenames[n] to access an image
 filenames = ['train/' + fname + '.jpg' for fname in training_labels['id']]
 
 #accessing image with above list
-Image.open(filenames[9000]).show()
+#Image.open(filenames[9000]).show()
 print(training_labels['breed'][9000])
 
 
@@ -188,6 +203,16 @@ def create_batches(X, y=None, batch_size=BATCH_SIZE, valid_data=False, test_data
 train_data = create_batches(X_train, y_train)
 val_data = create_batches(X_val, y_val, valid_data=True)
 
+#------------------
+
+
+dataset = tf.data.Dataset.from_tensor_slices((tf.constant(X),  
+                                                   tf.constant(y)))
+dataset = dataset.shuffle(buffer_size=len(X))
+data_batch = dataset.map(get_image_label).batch(32)
+
+#----------------
+
 print('\n Training data in batch format \n', train_data.element_spec, '\n\n Validation data in batch format \n', val_data.element_spec, '\n')
 
 
@@ -268,15 +293,12 @@ model.summary()
 
 #---------- FITTING OUR MODEL ----------
 
-tensorboard = TensorBoard(log_dir='logs/{}'.format(time()))
+#tensorboard = TensorBoard(log_dir='logs/{}'.format(time()))
 
 model.fit(x=train_data, 
           epochs=5, 
           validation_data=val_data, 
-          validation_freq=1,
-          callbacks=[tensorboard])
-
-
+          validation_freq=1)
 
 
 # ----------------------------------- END -------------------------------------
