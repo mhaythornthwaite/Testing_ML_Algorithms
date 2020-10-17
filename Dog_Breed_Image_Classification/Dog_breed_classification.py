@@ -293,13 +293,38 @@ model.summary()
 
 #---------- FITTING OUR MODEL ----------
 
-#tensorboard = TensorBoard(log_dir='logs/{}'.format(time()))
+'''
+#This may be used to train a model without outputting logs
 
 model.fit(x=train_data, 
           epochs=5, 
           validation_data=val_data, 
           validation_freq=1)
+'''
+import datetime
 
+log_dir = os.path.join(
+    "logs",
+    "fit",
+    datetime.datetime.now().strftime("%Y%m%d-%H%M%S"),
+)
+
+tensorboard_callback = TensorBoard(log_dir)
+
+model.fit(x=train_data, 
+          epochs=20, 
+          validation_data=val_data, 
+          validation_freq=1,
+          callbacks=[tensorboard_callback])
+
+'''
+#Note the following may be used to instantiate a session in tensorboard. 
+
+%load_ext tensorboard
+%tensorboard --logdir=logs/ --port=6006
+
+%reload_ext tensorboard
+'''
 
 # ----------------------------------- END -------------------------------------
 
