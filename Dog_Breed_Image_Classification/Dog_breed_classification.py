@@ -5,8 +5,7 @@ Created on Sun Aug  2 13:18:37 2020
 @author: mhayt
 """
 
-print('\n\n')
-print(' ---------------- START ---------------- \n')
+print('\n\n ---------------- START ---------------- \n')
 
 #------------------------------ KAGGLE DOG BREEDS -----------------------------
 
@@ -19,6 +18,7 @@ print(' ---------------- START ---------------- \n')
 #Evaluation
 #Evaluation on kaggle requires a file with predicted probabilities of each dog breed for each test image. So there will be 120 predictions per image and the evaluation metric on kaggle is log loss
 
+from time import time
 from PIL import Image
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -28,6 +28,7 @@ import tensorflow as tf
 import tensorflow_hub as hub
 from tensorflow import keras
 from tensorflow.keras import layers
+from tensorflow.python.keras.callbacks import TensorBoard
 
 plt.close('all')
 
@@ -238,6 +239,7 @@ def build_model(input_shape=INPUT_SHAPE, output_shape=OUTPUT_SHAPE, model_url=MO
     #setting up our layers ordinarily you may use layers.Dense() to set up each layer, but in this case we are using transfer learning and so all our layers are already defined in the hub.KerasLayer()
     model = tf.keras.Sequential([
         hub.KerasLayer(MODEL_URL),
+        tf.keras.layers.Dense(units=240),
         tf.keras.layers.Dense(units=output_shape, activation='softmax')
     ])
 
@@ -245,7 +247,7 @@ def build_model(input_shape=INPUT_SHAPE, output_shape=OUTPUT_SHAPE, model_url=MO
     model.compile(
         loss = tf.keras.losses.CategoricalCrossentropy(),
         optimizer = tf.keras.optimizers.Adam(),
-        metrics='accuracy'
+        metrics=['accuracy']
     )
     
     #building the model
@@ -256,9 +258,27 @@ def build_model(input_shape=INPUT_SHAPE, output_shape=OUTPUT_SHAPE, model_url=MO
 model = build_model()
 model.summary()
 
+#note in the summary printed to the console, we have trinable parameters and non trainable parameters. The non trainable parameters are the weights and biases in the mobilenet_v2. These remain as they are in transfer learning. The trainable parameters are the weights and biases originating from the layers which we have added. Ordinarily you simply add a single softmax layer but out of interest I've also added another layer before that to increase the number of trainable parameters I have in my model.
+
+
+#---------- CALLBACK FUNCTIONS ----------
+
+#these are functions we can use whilst a model is training such as save progress check progress, stop the training etc. This is specifically useful if we are training on a large dataset.
+
+
+#---------- FITTING OUR MODEL ----------
+
+tensorboard = TensorBoard(log_dir='logs/{}'.format(time()))
+
+model.fit(x=train_data, 
+          epochs=5, 
+          validation_data=val_data, 
+          validation_freq=1,
+          callbacks=[tensorboard])
+
+
 
 
 # ----------------------------------- END -------------------------------------
 
-print(' ----------------- END ----------------- ')
-print('\n')
+print(' ----------------- END ----------------- \n')

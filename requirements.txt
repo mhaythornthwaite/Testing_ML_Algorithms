@@ -7,3 +7,4 @@ pickleshare==0.7.5
 seaborn==0.10.1
 tensorflow-gpu==2.1.0
 tensorflow-hub==0.9.0
+pillow==7.2.0

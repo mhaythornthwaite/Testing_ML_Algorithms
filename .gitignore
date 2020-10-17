@@ -127,4 +127,4 @@ dmypy.json
 **/Dog_Breed_Image_Classification/test**
 **/Dog_Breed_Image_Classification/train**
 **/Dog_Breed_Image_Classification/misc**
-/Dog_Breed_Image_Classification/labels*
+**/Dog_Breed_Image_Classification/logs**
