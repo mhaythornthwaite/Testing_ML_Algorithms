@@ -19,6 +19,7 @@ print('\n\n ---------------- START ---------------- \n')
 #Evaluation on kaggle requires a file with predicted probabilities of each dog breed for each test image. So there will be 120 predictions per image and the evaluation metric on kaggle is log loss
 
 from time import time
+import datetime
 from PIL import Image
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -255,7 +256,7 @@ depth_mult_0_75 = 'https://tfhub.dev/google/imagenet/mobilenet_v2_075_224/classi
 depth_mult_0_50 = 'https://tfhub.dev/google/imagenet/mobilenet_v2_050_224/classification/4'
 depth_mult_0_35 = 'https://tfhub.dev/google/imagenet/mobilenet_v2_035_224/classification/4'
 
-MODEL_URL = depth_mult_0_35
+MODEL_URL = depth_mult_1_00
 
 #N.B./ we're going to be using the keras sequential API to train and build our networks. This is the simplest API available, which allows us to build our network layer by layer. By this we mean the layer L-3 is connected to only L-4 and feeds into L-2. There is a functional API available that is more flexible, it allows layers to connect to more than just the previous and next layers. With this it becomes possible to build very complex models such as siamese and residual networks
 
@@ -264,9 +265,10 @@ def build_model(input_shape=INPUT_SHAPE, output_shape=OUTPUT_SHAPE, model_url=MO
     #setting up our layers ordinarily you may use layers.Dense() to set up each layer, but in this case we are using transfer learning and so all our layers are already defined in the hub.KerasLayer()
     model = tf.keras.Sequential([
         hub.KerasLayer(MODEL_URL),
-        tf.keras.layers.Dense(units=240),
         tf.keras.layers.Dense(units=output_shape, activation='softmax')
     ])
+    
+    #tf.keras.layers.Dense(units=240),
 
     #compile the model, definining our loss function
     model.compile(
@@ -286,44 +288,41 @@ model.summary()
 #note in the summary printed to the console, we have trinable parameters and non trainable parameters. The non trainable parameters are the weights and biases in the mobilenet_v2. These remain as they are in transfer learning. The trainable parameters are the weights and biases originating from the layers which we have added. Ordinarily you simply add a single softmax layer but out of interest I've also added another layer before that to increase the number of trainable parameters I have in my model.
 
 
-#---------- CALLBACK FUNCTIONS ----------
+#---------- CALLBACKS AND CALLBACK FUNCTIONS ----------
 
-#these are functions we can use whilst a model is training such as save progress check progress, stop the training etc. This is specifically useful if we are training on a large dataset.
+#these are variables / functions we can use whilst a model is training such as save progress check progress, stop the training etc. This is specifically useful if we are training on a large dataset.
+
+#creating tensorboard_callback which will be used to save logs in our logs directory. Note the datetime is simply stating the name of the next folder down. 
+
+log_dir = os.path.join("logs",
+                       "fit",
+                       datetime.datetime.now().strftime("%Y%m%d-%H%M%S"))
+
+#tensorboard_callback = TensorBoard(log_dir)
+
+
+my_callbacks = [tf.keras.callbacks.EarlyStopping(patience=2),
+                tf.keras.callbacks.TensorBoard(log_dir=log_dir)]
 
 
 #---------- FITTING OUR MODEL ----------
 
-'''
-#This may be used to train a model without outputting logs
-
-model.fit(x=train_data, 
-          epochs=5, 
-          validation_data=val_data, 
-          validation_freq=1)
-'''
-import datetime
-
-log_dir = os.path.join(
-    "logs",
-    "fit",
-    datetime.datetime.now().strftime("%Y%m%d-%H%M%S"),
-)
-
-tensorboard_callback = TensorBoard(log_dir)
+#to remove the large quantity of content printed to the console and prevent saving the output to logs, simply remove the callbacks option.
 
 model.fit(x=train_data, 
           epochs=20, 
           validation_data=val_data, 
           validation_freq=1,
-          callbacks=[tensorboard_callback])
+          callbacks=my_callbacks)
 
 '''
 #Note the following may be used to instantiate a session in tensorboard. 
 
 %load_ext tensorboard
-%tensorboard --logdir=logs/ --port=6006
+%tensorboard --logdir=logs/ --host localhost
 
 %reload_ext tensorboard
+
 '''
 
 # ----------------------------------- END -------------------------------------
