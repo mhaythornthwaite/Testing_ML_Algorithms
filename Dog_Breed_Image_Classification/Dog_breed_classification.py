@@ -18,6 +18,9 @@ print('\n\n ---------------- START ---------------- \n')
 #Evaluation
 #Evaluation on kaggle requires a file with predicted probabilities of each dog breed for each test image. So there will be 120 predictions per image and the evaluation metric on kaggle is log loss
 
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+
 from time import time
 import datetime
 from PIL import Image
@@ -32,16 +35,6 @@ from tensorflow.keras import layers
 from tensorflow.python.keras.callbacks import TensorBoard
 
 plt.close('all')
-
-
-#---------- SETTING VERBOSITY ----------
-
-tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
-tf.get_logger().setLevel('ERROR')
-tf.autograph.set_verbosity(3)
-
-import os
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 
 #---------- CHECKING TF VERSION AND GPU ----------
@@ -308,18 +301,18 @@ my_callbacks = [tf.keras.callbacks.EarlyStopping(patience=2),
 #---------- FITTING OUR MODEL ----------
 
 #to remove the large quantity of content printed to the console and prevent saving the output to logs, simply remove the callbacks option.
-
+'''
 model.fit(x=train_data, 
           epochs=20, 
           validation_data=val_data, 
           validation_freq=1,
           callbacks=my_callbacks)
-
+'''
 '''
 #Note the following may be used to instantiate a session in tensorboard. 
 
 %load_ext tensorboard
-%tensorboard --logdir=logs/ --host localhost
+%tensorboard --logdir=logs/fit/ --host localhost
 
 %reload_ext tensorboard
 
