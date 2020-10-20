@@ -312,7 +312,7 @@ model.fit(x=train_data,
 #Note the following may be used to instantiate a session in tensorboard. 
 
 %load_ext tensorboard
-%tensorboard --logdir=logs/fit/ --host localhost
+%tensorboard --logdir=logs/fit/ --host 127.0.0.1
 
 %reload_ext tensorboard
 
