@@ -301,13 +301,22 @@ my_callbacks = [tf.keras.callbacks.EarlyStopping(patience=2),
 #---------- FITTING OUR MODEL ----------
 
 #to remove the large quantity of content printed to the console and prevent saving the output to logs, simply remove the callbacks option.
-'''
-model.fit(x=train_data, 
-          epochs=20, 
-          validation_data=val_data, 
-          validation_freq=1,
-          callbacks=my_callbacks)
-'''
+
+create_tb_logs = False
+epochs = 10
+
+if create_tb_logs:
+    model.fit(x=train_data, 
+              epochs=epochs, 
+              validation_data=val_data, 
+              validation_freq=1,
+              callbacks=my_callbacks)
+else:
+    model.fit(x=train_data, 
+              epochs=epochs, 
+              validation_data=val_data, 
+              validation_freq=1)
+
 '''
 #Note the following may be used to instantiate a session in tensorboard. 
 
@@ -317,6 +326,21 @@ model.fit(x=train_data,
 %reload_ext tensorboard
 
 '''
+
+
+#----------------------------- MAKING PREDICTIONS -----------------------------
+
+#this is just like predict_proba in scikit learn
+val_predictions = model.predict(val_data, verbose=2)
+
+prob = np.max(val_predictions[0])
+prob_ind = list(val_predictions[0]).index(prob)
+
+dog_prediction = unique_breeds[prob_ind]
+
+print(f'first image in val dataset is predcited to be a {dog_prediction} with a confidence of {round((prob*100), 2)}%')
+
+
 
 # ----------------------------------- END -------------------------------------
 
