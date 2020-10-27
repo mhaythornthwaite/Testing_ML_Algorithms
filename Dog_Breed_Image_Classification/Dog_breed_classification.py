@@ -27,6 +27,7 @@ from PIL import Image
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
+import pickle
 from sklearn.model_selection import train_test_split
 import tensorflow as tf
 import tensorflow_hub as hub
@@ -35,6 +36,20 @@ from tensorflow.keras import layers
 from tensorflow.python.keras.callbacks import TensorBoard
 
 plt.close('all')
+
+
+#------------------------------- INPUT VARIABLES ------------------------------
+
+#number of images gone into our training + validation set, set to 10222 to use full dataset
+num_images = 1000
+
+#training parameters
+batch_size = 32
+epochs = 1
+
+#saving parameters
+create_tb_logs = False
+save_model = True
 
 
 #---------- CHECKING TF VERSION AND GPU ----------
@@ -116,10 +131,8 @@ y = boolean_labels
 
 #experimenting will start off with a largely trimmed version of the dataset, ~1000 images instead of 10,000. This will speed up the inital testing/experimentation
 
-NUM_IMAGES = 1000
-
-X_train, X_val, y_train, y_val = train_test_split(X[:NUM_IMAGES], 
-                                                  y[:NUM_IMAGES], 
+X_train, X_val, y_train, y_val = train_test_split(X[:num_images], 
+                                                  y[:num_images], 
                                                   test_size = 0.2, 
                                                   random_state = 42)
 
@@ -168,9 +181,8 @@ test = get_image_label(X[42], y[42])
 
 
 #we now need to use the above to generate a number of batches in the form of a tuple (im, label)
-BATCH_SIZE=32
 
-def create_batches(X, y=None, batch_size=BATCH_SIZE, valid_data=False, test_data=False):
+def create_batches(X, y=None, batch_size=batch_size, valid_data=False, test_data=False):
     ''' 
     Creates batches out of image (X) and label (y) pairs.
     Shuffles the data if its training data but does not suffle validation data
@@ -234,7 +246,6 @@ def show_25_im(batch):
 #batch_visualisation.savefig('figures/batch_visualisation.png')
 
 
-
 #------------------------------ BUILDING A MODEL ------------------------------
 
 #Before we start we need to define the input and output shape of our model (image and label both in the form of tensors respectively, and the URL of the initial model we want to use (transfer learning)
@@ -290,8 +301,7 @@ model.summary()
 log_dir = os.path.join("logs",
                        "fit",
                        datetime.datetime.now().strftime("%Y%m%d-%H%M%S"))
-
-#tensorboard_callback = TensorBoard(log_dir)
+checkpoint_filepath = '/models'
 
 
 my_callbacks = [tf.keras.callbacks.EarlyStopping(patience=2),
@@ -301,9 +311,6 @@ my_callbacks = [tf.keras.callbacks.EarlyStopping(patience=2),
 #---------- FITTING OUR MODEL ----------
 
 #to remove the large quantity of content printed to the console and prevent saving the output to logs, simply remove the callbacks option.
-
-create_tb_logs = False
-epochs = 10
 
 if create_tb_logs:
     model.fit(x=train_data, 
@@ -339,6 +346,10 @@ prob_ind = list(val_predictions[0]).index(prob)
 dog_prediction = unique_breeds[prob_ind]
 
 print(f'first image in val dataset is predcited to be a {dog_prediction} with a confidence of {round((prob*100), 2)}%')
+
+#note that if the save location is longer than 255 characters then an error message will be provided.
+if save_model:
+    tf.keras.models.save_model(model, 'C:/Users/mhayt/Documents/Software_Developer-Python/2_Machine_Learning_ZTM_Course/Testing_ML_Algorithms/Saved_Models')
 
 
 
