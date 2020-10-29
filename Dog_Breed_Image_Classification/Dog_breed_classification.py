@@ -352,6 +352,37 @@ if save_model:
     tf.keras.models.save_model(model, 'C:/Users/mhayt/Documents/Software_Developer-Python/2_Machine_Learning_ZTM_Course/Testing_ML_Algorithms/Saved_Models')
 
 
+#---------- EXAMPLE DOG LIST ----------
+
+#In this section we want to make a df containing a row for each unique dog - 120 - as well as a link to an image of that dog. When we make predictions, we can then provide an example of what the predicted dog actually looks like. If the prediction is in error, this will help is understand whether or not this is reasonable.
+
+#unique_training_labels = training_labels.copy()
+unique_training_labels = training_labels[0:0]
+counter = 0
+
+for i in range(len(training_labels)):
+    breed_id = training_labels['id_int'].iloc[i]
+    if i==0:
+        unique_training_labels = unique_training_labels.append(training_labels.loc[i])
+        counter = counter + 1
+        continue
+    append = True
+    for j in range(i):
+        breed_id_2 = training_labels['id_int'].iloc[j]
+        if breed_id == breed_id_2:
+            append = False
+    if append:
+        counter = counter + 1
+        unique_training_labels = unique_training_labels.append(training_labels.loc[i])
+    
+    if counter == 120:
+        break
+    
+        
+
+
+
+
 
 # ----------------------------------- END -------------------------------------
 
