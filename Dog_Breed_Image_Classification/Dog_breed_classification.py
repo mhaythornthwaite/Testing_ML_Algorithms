@@ -46,7 +46,7 @@ num_images = 1000
 
 #training parameters
 batch_size = 32
-epochs = 1
+epochs = 10
 
 #saving parameters
 create_tb_logs = False
@@ -381,16 +381,17 @@ unique_training_labels_sort = unique_training_labels.sort_values(by='id_int')
 unique_training_labels_sort = unique_training_labels_sort.reset_index(drop=True)
 
 
+#---------- PREDICTION VARIABLES ----------
 
-val_ind = 0
+#setting index of the image in the validation dataset we wish to visualise
+val_ind = 2
 
+#validation predictions pre-processing
 val_predictions_ind = val_predictions[val_ind]
 val_predictions_ind_df = pd.DataFrame(val_predictions_ind)
 val_predictions_ind_df['index'] = val_predictions_ind_df.index
 val_predictions_ind_df_sorted = val_predictions_ind_df.sort_values(by=0, ascending=False)
 
-
-#---------- PREDICTION VARIABLES ----------
 
 #we will create the variables for the prediction that we are going to plot 
 
@@ -405,6 +406,9 @@ pred_2_breed = unique_training_labels_sort['breed'].loc[pred_2_ind]
 
 pred_1_img = Image.open(f'train/{pred_1_id}.jpg')
 pred_2_img = Image.open(f'train/{pred_2_id}.jpg')
+
+pred_1_perc = round(val_predictions_ind_df_sorted[0].iloc[0] * 100, 2)
+pred_2_perc = round(val_predictions_ind_df_sorted[0].iloc[1] * 100, 2)
 
 
 #---------- TRUE IMAGE VARIABLES ----------
@@ -425,7 +429,7 @@ im_breed = unique_training_labels_sort['breed'].loc[im_ind]
 #---------- PLOTTING PREDICTION ----------
 
 gs = gridspec.GridSpec(2, 4)
-gs.update(wspace=2)
+gs.update(wspace=4)
 ax1 = plt.subplot(gs[0, 1:3])
 ax2 = plt.subplot(gs[1, :2], )
 ax3 = plt.subplot(gs[1, 2:])
@@ -435,8 +439,8 @@ ax2.imshow(pred_1_img)
 ax3.imshow(pred_2_img)
 
 ax1.set_title(im_breed)
-ax2.set_title(pred_1_breed)
-ax3.set_title(pred_2_breed)
+ax2.set_title(f'{pred_1_breed}: {pred_1_perc}%')
+ax3.set_title(f'{pred_2_breed}: {pred_2_perc}%')
 
 plt.show()
 
