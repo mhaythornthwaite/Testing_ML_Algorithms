@@ -28,6 +28,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 import pickle
+import matplotlib.gridspec as gridspec
 from sklearn.model_selection import train_test_split
 import tensorflow as tf
 import tensorflow_hub as hub
@@ -356,7 +357,6 @@ if save_model:
 
 #In this section we want to make a df containing a row for each unique dog - 120 - as well as a link to an image of that dog. When we make predictions, we can then provide an example of what the predicted dog actually looks like. If the prediction is in error, this will help is understand whether or not this is reasonable.
 
-#unique_training_labels = training_labels.copy()
 unique_training_labels = training_labels[0:0]
 counter = 0
 
@@ -374,12 +374,71 @@ for i in range(len(training_labels)):
     if append:
         counter = counter + 1
         unique_training_labels = unique_training_labels.append(training_labels.loc[i])
-    
     if counter == 120:
         break
-    
-        
 
+unique_training_labels_sort = unique_training_labels.sort_values(by='id_int')
+unique_training_labels_sort = unique_training_labels_sort.reset_index(drop=True)
+
+
+
+val_ind = 0
+
+val_predictions_ind = val_predictions[val_ind]
+val_predictions_ind_df = pd.DataFrame(val_predictions_ind)
+val_predictions_ind_df['index'] = val_predictions_ind_df.index
+val_predictions_ind_df_sorted = val_predictions_ind_df.sort_values(by=0, ascending=False)
+
+
+#---------- PREDICTION VARIABLES ----------
+
+#we will create the variables for the prediction that we are going to plot 
+
+pred_1_ind = val_predictions_ind_df_sorted['index'].iloc[0]
+pred_2_ind = val_predictions_ind_df_sorted['index'].iloc[1]
+
+pred_1_id = unique_training_labels_sort['id'].loc[pred_1_ind]
+pred_2_id = unique_training_labels_sort['id'].loc[pred_2_ind]
+
+pred_1_breed = unique_training_labels_sort['breed'].loc[pred_1_ind]
+pred_2_breed = unique_training_labels_sort['breed'].loc[pred_2_ind]
+
+pred_1_img = Image.open(f'train/{pred_1_id}.jpg')
+pred_2_img = Image.open(f'train/{pred_2_id}.jpg')
+
+
+#---------- TRUE IMAGE VARIABLES ----------
+
+#we will set the variables of the actual imagewe are predicting
+
+im_id = X_val[val_ind]
+
+im_img = Image.open(im_id)
+
+lst = list(y_val[val_ind])
+lst = [str(i) for i in lst]
+im_ind = lst.index('True')
+
+im_breed = unique_training_labels_sort['breed'].loc[im_ind]
+
+
+#---------- PLOTTING PREDICTION ----------
+
+gs = gridspec.GridSpec(2, 4)
+gs.update(wspace=2)
+ax1 = plt.subplot(gs[0, 1:3])
+ax2 = plt.subplot(gs[1, :2], )
+ax3 = plt.subplot(gs[1, 2:])
+
+ax1.imshow(im_img)
+ax2.imshow(pred_1_img)
+ax3.imshow(pred_2_img)
+
+ax1.set_title(im_breed)
+ax2.set_title(pred_1_breed)
+ax3.set_title(pred_2_breed)
+
+plt.show()
 
 
 
