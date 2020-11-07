@@ -28,6 +28,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 import pickle
+import random
 import matplotlib.gridspec as gridspec
 from sklearn.model_selection import train_test_split
 import tensorflow as tf
@@ -394,7 +395,7 @@ unique_training_labels_sort = unique_training_labels_sort.reset_index(drop=True)
 #---------- PREDICTION VARIABLES ----------
 
 #setting index of the image in the validation dataset we wish to visualise
-val_ind = 2
+val_ind = random.randrange(200)
 
 #validation predictions pre-processing
 val_predictions_ind = val_predictions[val_ind]
@@ -438,11 +439,12 @@ im_breed = unique_training_labels_sort['breed'].loc[im_ind]
 
 #---------- PLOTTING PREDICTION ----------
 
-gs = gridspec.GridSpec(2, 4)
-gs.update(wspace=4)
-ax1 = plt.subplot(gs[0, 1:3])
-ax2 = plt.subplot(gs[1, :2], )
-ax3 = plt.subplot(gs[1, 2:])
+fig = plt.figure(figsize=(5, 7))
+gs = gridspec.GridSpec(nrows=2, ncols=2, height_ratios=[2, 1])
+gs.update(wspace=0.3, hspace=0.7)
+ax1 = plt.subplot(gs[0, :])
+ax2 = plt.subplot(gs[1, 0])
+ax3 = plt.subplot(gs[1, 1])
 
 ax1.imshow(im_img)
 ax2.imshow(pred_1_img)
@@ -451,6 +453,11 @@ ax3.imshow(pred_2_img)
 ax1.set_title(im_breed)
 ax2.set_title(f'{pred_1_breed}: {pred_1_perc}%')
 ax3.set_title(f'{pred_2_breed}: {pred_2_perc}%')
+
+line = plt.Line2D((0.1,0.9),(0.42,0.42), color='dimgrey', linewidth=2)
+fig.add_artist(line)
+
+fig.text(0.38, 0.38, 'Predictions', weight='bold', fontsize=14)
 
 plt.show()
 
