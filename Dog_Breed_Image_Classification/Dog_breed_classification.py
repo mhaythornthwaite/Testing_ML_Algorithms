@@ -48,9 +48,16 @@ num_images = 1000
 batch_size = 32
 epochs = 10
 
+#model selection
+load_model = True #load previously trained model instead of training
+
 #saving parameters
 create_tb_logs = False
 save_model = True
+
+if load_model:
+    save_model = False
+    create_tb_logs = False
 
 
 #---------- CHECKING TF VERSION AND GPU ----------
@@ -319,7 +326,7 @@ if create_tb_logs:
               validation_data=val_data, 
               validation_freq=1,
               callbacks=my_callbacks)
-else:
+elif load_model != True:
     model.fit(x=train_data, 
               epochs=epochs, 
               validation_data=val_data, 
@@ -337,6 +344,9 @@ else:
 
 
 #----------------------------- MAKING PREDICTIONS -----------------------------
+
+if load_model:
+    model = tf.keras.models.load_model('C:/Users/mhayt/Documents/Software_Developer-Python/2_Machine_Learning_ZTM_Course/Testing_ML_Algorithms/Saved_Models')
 
 #this is just like predict_proba in scikit learn
 val_predictions = model.predict(val_data, verbose=2)
