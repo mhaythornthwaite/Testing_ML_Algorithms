@@ -113,6 +113,52 @@ It appears there's not a one size fits all solution here. The above actually fou
 
 
 
+------------------------------ MODEL EVALUATION -------------------------------
+
+----- CONFUSION MATRIX -----
+
+Very commonly used, it plots predicted labels against observed labels in heatmap form. Good models will show high heat going diagonally, representing correct predictions. Importantly, this shows us where our model is misclassifying and whether these missclassifications are understandable/expected or not. An example is a model that predicts a lion instead of a cheetah is not as worrying as if it predicted a hippo.
+
+----- ROC CURVE -----
+
+----- PRECISION, RECALL, F1 -----
+
+The first metric is accuracy, defined as simply the #correct predictions / #all predictions. This is commonly used with cross-validation to prevent an anomalous test batch which is not representative of the full dataset. This is possible as typically only ~20% of the data is used for the test batch. 
+
+Precision (PREDICTED POSITIVES - True positive & false positives) is defined as the fraction of true positives over all predicted positives (true positives + false positives). If this is 90% then it means there is a 90% chance that a positive result is actually positive.
+
+Recall or Sensitivity  (ACTUAL POSITIVES - True positives & false negatives) is defined as the fraction of true positives over the total number of positives (true psotives + false negatives). If recall is 60% it means 40% of positive cases are missed.
+
+Specificity (ACUTAL NEGATIVES - True negatives & false positives) is defined as the fraction of true negatives over the total number of negatives (true negatives and false negatives). It is the same as recall or sensitivity but for negatives. Therefore a specificity of 80% means 20% are incorrectly classified as positive.
+
+Negative Predict Value (PREDICTED NEGATIVES - True negatives & false negatives). Less used but the same as precision for negatives. 70% NPV means 70% chance a negative is actually negative
+
+
+
+Actual Positive         95                40
+
+Actual Negative         5                 60
+
+                  Pred Positive     Pred Negative
+
+Precision:     95%   (95 / 95 + 5) if youre predicted positive you have it
+Recall:        70%   (95 / 95 + 40) if you have it 70% chance of corr pred
+Specificity:   92%   (60 / 60 + 5) if you dont have it 92% chance of corr pred
+NPV:           60%   (60 / 60 + 40) if you're predict negative you may have it
+
+To me precision and NPV are the useful ones as they tell you something about a blind prediction, i.e. if you have a prediction whats the chance that that prediction is wrong.
+
+
+----- REGRESSION METRICS -----
+
+Variance, MSE, R^2
+
+----- VALIDATION & LEARNING CURVES -----
+
+
+Further reading:
+https://www.jeremyjordan.me/evaluating-a-machine-learning-model/#:~:text=The%20three%20main%20metrics%20used,the%20number%20of%20total%20predictions.
+
 ------------------------------ GRADIENT DESCENT -------------------------------
 
 Gradient descent is an optimisation tool and is used in many algorithms in order to find the minimum of a loss or cost function (for example, in linear regression, we are trying to minimise the sum of square residuals). 
