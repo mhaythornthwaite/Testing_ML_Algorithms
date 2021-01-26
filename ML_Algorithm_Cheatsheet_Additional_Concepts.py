@@ -133,7 +133,14 @@ Specificity (ACUTAL NEGATIVES - True negatives & false positives) is defined as 
 
 Negative Predict Value (PREDICTED NEGATIVES - True negatives & false negatives). Less used but the same as precision for negatives. 70% NPV means 70% chance a negative is actually negative
 
+The F1 score is the harmonic mean of the precision and recall, defined as the following:
+F1 Score = (2 * Precision * Recall) / (precision + recall)
 
+Derevation of this can be seen below:
+HM = n / sum(xn-1)     
+HM = 2 / x-1 * y-1             with 2 variables
+HM = 2xy / x-1*xy + y-1*xy     multiplying by xy/xy
+HM = 2xy / y+x
 
 Actual Positive         95                40
 
@@ -146,7 +153,16 @@ Recall:        70%   (95 / 95 + 40) if you have it 70% chance of corr pred
 Specificity:   92%   (60 / 60 + 5) if you dont have it 92% chance of corr pred
 NPV:           60%   (60 / 60 + 40) if you're predict negative you may have it
 
+F1:            81%   ((2 * 95 * 70) / 95 + 70)
+Accuracy:      78%   (95 + 60 / 95 + 60 + 5 + 40)
+
 To me precision and NPV are the useful ones as they tell you something about a blind prediction, i.e. if you have a prediction whats the chance that that prediction is wrong.
+
+Note that F1 ignores the True Negatives and thus is misleading for unbalanced classes. Consider the above where our True Negatives are very high or nill, our F1 will be the same. 
+
+Also note that to combat where one of either recall or precision may be more important, a beta weighting factor has been placed into the equation:
+
+Fb = (1 + b^2) * ([P * R] / [{b^2 * P} + R])
 
 
 ----- REGRESSION METRICS -----
