@@ -32,6 +32,14 @@ sigma is the activation function used in this instance, which converts the  outp
 --------------------
 Activation Functions
 
+Note that the above equations are entirely linear, a neurons value is the sum of many y = mx + c equations. We can add non-linearity by selecting a non-linear activation function. If we take a simple example of clusters of circular data in two dimensions, using tanh or sigma for instance may result in a better fit to the data as opposed to a combination of linear lines.
+
+Now let’s take an example where we have only one neuron feeding into another single neuron in the next layer. The weight is 2 and the bias is 1. If the left neuron had a sigma activation function it may only be between 0 and 1. Therefore the range of the inputs to the activation function of the right neuron is as follows:
+n = sigma(0 * 2 + 1) = sigma(1)
+n = sigma(1 * 2 + 1) = sigma(3)
+
+We can therefore see that the weights and biases feeding into a neuron govern what shape the activation is. In this case 1 to 3 is not too bad, but if the weights + biases had got too high, the sigma function would have been basically flat as it asymptotically approaches 1 meaning any input from the neuron would result in basically the same output. This is called saturation and is a problem during backpropagation.
+
 N.B./ sigma takes an input between -inf to inf and converts this to a number between 0 and 1. A large negative number will be close to 0 and a large positive number will be close to 1. 
 
 sigma(x) = 1 / (1 + e^-x)
@@ -49,7 +57,7 @@ tanh(x) which transforms x to between -1 to 1, the advantage being that tanh(0) 
 ReLU - f(x) = max(0, x) - simply put all negative values of x are set to 0 and all positive values are retained. 
 
 ReLU activation function has become popular recently with researchers demonstrating in 2011 it's ability to better train DNN. Some advantages include:
-- sparse activation (only ~50% of neurons with ReLU will be activated due to x<0)
+- sparse activation (only ~50% of neurons with ReLU will be activated due to neuron=0 where x<0)
 - fewer vanishing gradient problems compared to saturating functions such as the ones above which saturate in both directions. During backpropagation, each of the NN weights receives an update proportional to the partial derivative of the error function with respect to the current weight. When we approach saturation, a change to the weight has a very small impact on the output of the neuron, and therefore the gradient decreases exponentially as no more can be done to change the error. 
 --------------------
 
