@@ -87,7 +87,9 @@ It was in 2012, that Alex Krizhevsky, with AlexNet, pioneered convolutional neur
 
 In CNN, layers are no longer represented by vectors, but instead by tensors in 3 dimensions, with a width, height and depth (already this makes more sense as pixels next to one another matter - in MLP this is vectorized so this information is lost). Take the 224*224 RGB image - this has an input layer of [224, 224, 3]. 
 
-When performing convolution, we take the initial layer (may be input layer or hidden layer) and run a filter over the data to produce what’s called a feature map. Say we use a single filter of size 3*3*3. When we run this over our initial layer of 224*224*3 we receive an output of 222*222*1. Say we design a set of filters to detect edges, and we have 8 of them. Each filter is passed over the data to produce 8 feature maps, which are subsequently patched together to produce the convolutional layer of size 222*222*8. 
+When performing convolution, we take the initial layer (may be input layer or hidden layer) and run a filter over the data to produce what’s called a feature map. Say we use a single filter of size 3*3*3. When we run this over our initial layer of 224*224*3 we receive an output of 222*222*1. Say we design a set of filters to detect edges, and we have 8 of them. Each filter is passed over the data to produce 8 feature maps, which are subsequently patched together to produce the convolutional layer of size 222*222*8.
+
+N.B./ Some general confusion over whether a single filter produces a filter map or whether the result of a stack of filters produces the filter map. It appears the latter, with the former called a response map. 
 
 An ideal CNN would have initial convolutional layers that detected gross features, such as edges, with later layers honing in on specific 'features' (I'm using features here in a human sense) such as eyes, ears etc. that may be important in the final classification.
 
