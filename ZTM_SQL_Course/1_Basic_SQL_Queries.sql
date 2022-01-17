@@ -18,14 +18,20 @@
 --ranaming columns, note this only renamed the column of the returned data, not the actual database
 --SELECT emp_no AS "Employee Number", birth_date AS "Birthday" FROM employees;
 
+--select the employee with the name Mayumi Schueller
+--SELECT * 
+-- FROM employees
+--WHERE first_name='Mayumi'
+--  AND last_name='Schueller';
+
 
 -------------------------- FUNCTIONS -------------------------- 
 --mixture of aggregate and scalar functions in the following
 
---CONCAT, stitching together first and last name, note double quote refer to a column name, single quote refer simply to text, hence we're using ' ' to denote a space in the soncat function. 
+--CONCAT, stitching together first and last name, note double quote (" ") refer to a column name, single quote refer simply to text, hence we're using ' ' to denote a space in the soncat function. 
 --SELECT emp_no, 
 --       CONCAT(first_name, ' ', last_name) AS "Full Name" 
--- FROM employees;
+--  FROM employees;
 
 --COUNT, how many people work here?
 --SELECT COUNT(emp_no) FROM employees;
@@ -41,5 +47,24 @@
 
 --SUM, whats the total amount the company pays per year?
 --SELECT SUM(salary) FROM salaries
+
+
+-------------------------- FILTERING -------------------------- 
+
+--select all female employees.
+--SELECT CONCAT(first_name, ' ', last_name) AS "Full Name" 
+--  FROM employees 
+-- WHERE gender = 'F'
+
+--select all employees with a first name of Matt or Chirstian
+--SELECT * 
+--  FROM employees
+-- WHERE first_name='Matt' OR first_name='Chirstian' 
+
+--investigating the order of operations
+SELECT *
+  FROM employees
+ WHERE first_name = 'Georgi'
+    OR first_name = 'Bezalel' AND last_name = 'Simmel' AND last_name = 'Facello'
 
 
