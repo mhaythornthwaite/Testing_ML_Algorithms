@@ -65,6 +65,9 @@
 SELECT *
   FROM employees
  WHERE first_name = 'Georgi'
-    OR first_name = 'Bezalel' AND last_name = 'Simmel' AND last_name = 'Facello'
+    OR first_name = 'Bezalel' AND last_name = 'Simmel' AND last_name = 'Facello';
+    
+    
+    
 
 
