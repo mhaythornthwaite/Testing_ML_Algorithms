@@ -142,9 +142,9 @@ HM = 2 / x-1 * y-1             with 2 variables
 HM = 2xy / x-1*xy + y-1*xy     multiplying by xy/xy
 HM = 2xy / y+x
 
-Actual Positive         95                40
+Actual Positive         95 TP               40 FN
 
-Actual Negative         5                 60
+Actual Negative         5 FP                60 TN
 
                   Pred Positive     Pred Negative
 
