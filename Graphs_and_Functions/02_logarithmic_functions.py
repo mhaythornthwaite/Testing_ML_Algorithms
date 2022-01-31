@@ -5,7 +5,7 @@ Created on Sat Jan 29 11:38:01 2022
 @author: mhayt
 """
 
-from math import log, e, sqrt, exp
+from math import log, e, exp
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -99,7 +99,6 @@ ax.set_xlim(-10,10)
 
 
 #--------------------------------- y = -ln(x) ---------------------------------    
-#BINARY LOGARITHM
 
 x = list(np.linspace(0.01, 10, 100))
 y = [-log(i, e) for i in x]
@@ -110,8 +109,41 @@ fig.suptitle('y=-ln(x)', y=0.95, fontsize=16, fontweight='bold')
 axis_spine_placement(ax)
 
 
+#--------------------------------- y = ln(x+3) ---------------------------------    
+
+x = list(np.linspace(-2.9, 10, 100))
+y = [log(i+3, e) for i in x]
+
+fig, ax = plt.subplots()
+ax.plot(x, y)
+fig.suptitle('y=ln(x+3)', y=0.95, fontsize=16, fontweight='bold')
+axis_spine_placement(ax)
 
 
+#--------------------------------- y = ln(3x) ---------------------------------    
 
+x = list(np.linspace(0.01, 10, 100))
+y = [log(3*i, e) for i in x]
+
+fig, ax = plt.subplots()
+ax.plot(x, y)
+fig.suptitle('y=ln(3x)', y=0.95, fontsize=16, fontweight='bold')
+axis_spine_placement(ax)
+ax.set_ylim(-4,4)
+
+
+#--------------------------------- y = [ln(3-x)e^x]/ln(2) ---------------------------------    
+
+x = list(np.linspace(-2.5, 2.5, 100))
+y = [(log(3-i, e)*exp(i))/log(2, e) for i in x]
+y2 = [exp(i) for i in x]
+y3 = [log(3-i, e)/log(2, e) for i in x]
+
+fig, ax = plt.subplots()
+ax.plot(x, y)
+ax.plot(x, y2, c='#67577D', alpha=0.35, ls='--')
+ax.plot(x, y3, c='#67577D', alpha=0.35, ls='--')
+fig.suptitle('y=[ln(3-x)e^x]/ln(2)', y=0.95, fontsize=16, fontweight='bold')
+axis_spine_placement(ax)
 
 
