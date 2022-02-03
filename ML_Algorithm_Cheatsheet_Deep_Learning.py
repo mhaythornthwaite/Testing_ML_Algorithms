@@ -328,7 +328,11 @@ This is called categorical cross-entropy and results in our loss simply being th
 In effect cross entropy loss penalises heavily the predictions that are confident but wrong.
 
 
+-------------------------------- DEAD NEURONS ---------------------------------
 
+Dead neurons happen when the output of our neuron is zero. This ccan especially happen when we use a RelU activation function, where any negative input into the activation will prodduce zero. The problem with this is when the activation is zero the dervative is also zero, emaning the neuron can no longer update. It can be thought of as natural dropout, the exception being that it produces a zero when making a prediction. When using dropout we only have a negative value when training. 
+
+One way to get around this is to use a 'leaky RelU'. Instead of pushing the negative values to zero, we muliply the negative inputs by a small value (e.g. 0.01). This means the neuron will not be completely dead, instead it will be allowed to slowly update. 
 
 
 '''
