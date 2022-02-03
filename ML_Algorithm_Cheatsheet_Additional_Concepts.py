@@ -223,6 +223,33 @@ To summarise:
 This is very similar to gradient descent. This is typically applied where we have a very large number of samples. Instead of calculating the gradient using the many samples, which would take a long time, we take a random subset of the samples and instead use that for gradient descent.
 
 
+------------------------------ VARIANCE & BIAS --------------------------------
+
+A variance is the average of the squared differences from the mean. To figure out the variance, calculate the difference between each point within the data set and the mean. Once you figure that out, square and average the results.
+
+Variance = SUM(x-xbar)^2 / N-1
+
+We divide by n-1 because in reality we do not know the true mean, and empirical studies show that we better characterise variance and standard deviation by dividing by n-1. We are making the variance in the dataset bigger by doing this. Note the effect of this is greater the fewer samples we have. 
+
+Find the variance and standard deviation for the following list:
+
+li = [3,5,8,7,2]
+
+xbar = 5
+N - 1 = 4
+
+variance = [(3-5)^2 + (5-5)^2 + (8-5)^2 + (7-5)^2 + (2-5)^2] / 4
+variance = (4 + 0 + 9 + 4 + 9) / 4
+variance = 6.5
+
+standard dev = ([(3-5)^2 + (5-5)^2 + (8-5)^2 + (7-5)^2 + (2-5)^2] / 4)^0.5
+standard dev = [(4 + 0 + 9 + 4 + 9) / 4]^0.5
+standard dev = 2.54
+
+Note that the concept of variance or variability can also be applied to machine learning models. A model that performs significantly different on different datasets (e.g. training vs testing dataset) can be said to have high variance. 
+
+Bias is a phenomenon that skews the result of an algorithm in favour or against an idea. Bias is considered a systematic error that occurs in the machine learning model itself due to incorrect assumptions in the ML process. For example, assuming a set of inputs is linearly related to the target when it is not may produce bias. Say we use linear regression to fit a straight line to weight vs height. Here we may always predict the weight for a tall individual is too light because the true (hidden) function is not linear.
+
 
 
 '''
