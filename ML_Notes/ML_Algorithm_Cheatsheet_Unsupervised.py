@@ -89,5 +89,20 @@ Each time the starting project is different, because this is randomly assigned. 
 t-SNE can be used for both dimensionality reduction and clustering. 
 
 
+
+----------------------------------- DBSCAN ------------------------------------
+
+This is a density-based approach to clustering and is surprisingly simple. There are two variables we need to assign when running this algorithm. Both are related to the concept of core points. These are: overlap number and distance. 
+
+Say we assign the overlap number to 4. We then go over every
+sample in the dataset and check to see if that sample is close to 4 other samples (the closeness is defined by the overlap distance). If there are more than 4 samples close to any given sample, it is defined as a core point.
+
+Once we have our list of core points, we randomly select a core point to begin growing our first cluster. Every point in the initial core points vicinity becomes a member of that cluster. We continue to grow this cluster by extending out from every captured core point in that vicinity. 
+
+Note that any points that are not core points will be included in the cluster, but no growth will continue from those points. Once we have exhausted all the core points the process is complete and we begin the process again with one of the remaining core points not assigned to the first cluster.
+
+It should be noted that this is a stochastic algorithm because the selection of initial core points is random. This is important because a non-core point could fringe multiple clusters and therefore whichever cluster forms first will collect this non-core point.
+
+
 '''
 
