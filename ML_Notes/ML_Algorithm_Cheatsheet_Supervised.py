@@ -239,12 +239,78 @@ Note./ we only need to do rotations in log space, and the algorithm typically on
 
 
 
+---------------------------- MULINOMIAL NAIVE BAYES ---------------------------
 
---------------------------------- NAIVE BAYES ---------------------------------
+The multinomial naive bayes is suitable for classification with discrete features such as word counts. It is popular for doing simple NLP, but unfortunately does not take into account order (bag of words). 
+
+NLP is often used as an example with classification of spam but for this I will run through a different scenario. Say an inspector has gone to 5 classrooms and rated each one poor or good. They also took two measurements: teacher experience (number of years) and one of class size. 
+
+Room 1 (Poor)
+Size:          29
+Experience:    4
+
+Room 2 (Poor)
+Size:          25
+Experience:    7
+
+Room 3 (Good)
+Size:          26
+Experience:    16
+
+Room 4 (Good)
+Size:          18
+Experience:    8
+
+Room 5 (Good)
+Size:          22
+Experience:    12
+
+The first thing we do for each class is sum up each feature to give the following:
+
+Poor (2 cases)
+Size:       54
+Experience: 11
+
+Good (3 cases)
+Size:       66
+Experience: 36
+
+We can then calculate the probability of size and experience given it was with a good or poor class:
+
+P(Size|Poor) = 54/(54+11) = 0.83
+P(Experience|Poor) = 11/(54+11) = 0.17
+
+P(Size|Good) = 66/(66+36) = 0.65
+P(Experience|Good) = 36/(66+36) = 0.35
+
+We then calculate the prior probability. This is out initial guess and it is common for this to be estimated from the training data. Because 3 of the 5 classes are good, the prior probability of a good class will be set as 0.6.
+
+P(Good) = 0.6
+P(Poor) = 0.4
+
+Now we're ready to make a prediction.
+
+Class 6 (Unknown)
+Size = 27
+Experience = 11
+
+Probability of a good class = P(Good) * 
+                              P(Size|Good)^(Size) * 
+                              P(Experience|Good)^(Experience)
+
+Probability of a good class = 0.6 * 0.65^27 * 0.35^11 = 5.1*10-11
+
+Probability of a Poor class = P(Poor) * 
+                              P(Size|Poor)^(Size) * 
+                              P(Experience|Poor)^(Experience)
+
+Probability of a poor class = 0.4 * 0.83^27 * 0.17^11 = 8.9*10-12
+
+So probability of a good class is larger than the probability of a small class by a factor of around 6 and therefore we classify this as a good class. 
 
 
 
-
+----------------------------- GAUSSIAN NAIVE BAYES ----------------------------
 
 
 
