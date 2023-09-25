@@ -170,11 +170,43 @@ dC
 --   =  (many partial differentials due to long input sequence)
 dw2
 
-In this we will have 20 partial differentials relating to the same w2. We can strip this back away from the calculus to make it easier to understand. Say w2=2. So every time we iterate over an entry in our sequence we'll be multiplying the hiden layer neuron by 2. This could get exponentially large where we have a long sequence. Alternatively if w2=0.5 then we'll get tiny numbers. The result is the exploding or vanishing gradient problem. Where w2 is 2, and we have a long sequence the answer is going to be so incorrect that the gradient or differential of cost with respect to the weight is going to be enormous. Therefore we'll make a gigantic jump and the next w2 could say be equal to -10. That will be even more incorrect and we'll jump to 50.. and so on. 
+In this we will have 20 partial differentials relating to the same w2. We can strip this back away from the calculus to make it easier to understand. Say w2=2. So every time we iterate over an entry in our sequence we'll be multiplying the hidden layer neuron by 2. This could get exponentially large where we have a long sequence. Alternatively if w2=0.5 then we'll get tiny numbers. The result is the exploding or vanishing gradient problem. Where w2 is 2, and we have a long sequence the answer is going to be so incorrect that the gradient or differential of cost with respect to the weight is going to be enormous. Therefore we'll make a gigantic jump and the next w2 could say be equal to -10. That will be even more incorrect and we'll jump to 50.. and so on. 
+
+This is a problem for sequences of any great length because we need our state weights (in this example w2) to basically equal 1, meaning our state weights effectively become useless.
 
 
 ----------------------------- LSTM NEURAL NETWORKS ----------------------------
 
+We've discussed above the fundamental issue with RRNs above being the exploding/vanishing gradient problem. LSTMs are similar to RRNs but with some subtle changes that allow us to tackle this issue.
+
+The actual architecture of an LSTM is actually quite complex so we'll try to break it down into the fundamental differences and why they matter. The main difference is the addition of a Long-Term-Memory track. We can draw a LSTM model in the same way we draw our RNN model, with a feedback loop in each neuron. But this time we have a Short-Term-Memory track which gets pulled in and a Long-Term-Memory track that may or may not get pulled in. 
+
+We also refer to an LSTM 'neuron' as a cell or unit, because there are actually 5 different computations occurring in a unit:
+
+This is applied at the beginning and it referred to as the Forget Gate
+Percentage of Long-Term to Remember = sigmoid( input*w1 + stm*w2 + b1 )
+
+
+Percentage of Long-Term to Update  = sigmoid( input*w3 + stm*w4 + b2 )
+Possible Long-Term to Update       = tanh( input*w5 + stm*w6 + b3 )
+
+Long-Term Update (Input Gate) = Percentage of Long-Term to Update * Possible Long-Term to Update
+
+
+Percentage of Short-Term to Update  = sigmoid( input*w7 + stm*w8 + b4 )
+Possible Short-Term to Update       = tanh( Long-Term Update )
+
+Short-Term Update (Output Gate) = Percentage of Short-Term to Update * Possible Short-Term to Update
+
+N.B./ sigmoid ->  0 to 1
+         tanh -> -1 to 1
+
+-------
+SUMMARY
+Note here that our LTM update is entirely influenced by our STM and input. Where as note our STM update is influenced by our input, previous STM and LTM. This is where the conveyor belt analogy is used. Our LTM is chugging along, picking up information from the input and STM along the way. Where as our STM (or Output Gate) is being influenced by everything, the input, previous STM and our LTM. So it's able to pick up information from our LTM as it wishes if it helps the model.
+-------
+
+The reason we remove the vanishing gradient problem is due to the way the forget gate and LTM conveyor belt. Imagine we have a STM that keeps getting smaller and smaller from a weight that is <1 in a traditional RNN. Well now at every unroll we have the ability to pull in LTM information meaning that our STM is less susceptible to be repeatedly reduced, it can be topped up with the LTM. Conversely, we can do the same where the weight > 1, our LTM can be used to chip down the STM to prevent exponential increases.
 
 
 
