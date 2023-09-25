@@ -210,6 +210,25 @@ The reason we remove the vanishing gradient problem is due to the way the forget
 
 
 
+----------------------- ENCODER-DECODER NEURAL NETWORKS -----------------------
+
+This heavily builds upon the LSTM section but again adds slightly to it to make it compatible with seq to seq predictions. It is almost like stitching two LSTMs together. Lets delve into the detail.
+
+-------
+ENCODER
+In this basic example we will have a single LSTM unit or cell in a single layer for the encoder. In reality we may have many more units in each layer and many more layers (in the original paper, they had 1,000 units in each layer along with 4 layers). 
+
+Say we want to translate 'Lets go' to 'Vamos'. We will start with the English phrase 'Lets go' and we'll  unroll our LSTM twice because we have two words in our sentence. We pass 'lets' in first (using a word embedding layer that converts English words to numbers like word2vec first), carry over our short term and long term components to the second unrolled layer where we'll pass in 'go'. Once again we'll run this through the model to update our long and short term components. The key here is these don’t feed into a fully connected dense layer like an LSTM would normally do to produce its output. Instead these long and short term components are carried across into the decoder. These values are referred to as the CONTEXT VECTOR. 
+
+-------
+DECODER
+In this example the decoder also only has a single layer with a single LSTM unit in it. The distinction comes that the LSTM layer in the decoder is different from the encoder, that it, it has different trained weights and biases. 
+
+We start by passing into the first unrolled unit a special token called <EOS> (end of sentence) sometimes referred to as <SOS> (start of sentence). This is because we wish to predict the next word starting from scratch at the beginning. This is passed into a different word embedding layer that converts Spanish words into vectors. This vector is passed into the LSTM unit which is then passed into a fully connected dense layer with softmax activation that predicts the next word (Spanish word that is). In this case the next word in 'Vamos'. We haven’t quite finished yet however, because we need to continue unrolling our model and predicting, until we get an <EOS> token predicted in the dense layer, which suggests the prediction of the sentence has come to an end. Here we feed in Vamos to our Spanish word embedding layer, which gets fed as input into the second unrolled LSTM unit. Note that the long and short term components of the first unrolled unit get carried forward into the second one as usual. After we calculate our way through the LSTM unit and the dense unit we predict an <EOS> which triggers the iteration to end. 
+
+Note that the output dense layer has to be very large. In the original paper, the output layer in the decoder had 80,000 neurons to match the size of the output vocabulary.
+
+
 
 --------------------------- CONCEPTS & DEFINITIONS ----------------------------
 
