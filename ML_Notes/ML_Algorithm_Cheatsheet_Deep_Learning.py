@@ -130,6 +130,52 @@ Also note that our pooling layer is generated with a pre-defined function. There
 -----------------
 
 
+-------------------------- RECURRENT NEURAL NETWORKS --------------------------
+
+We're now going to move away from networks designed for image data and into networks defined for sequence data, and specifically for sequences of variable length. 
+
+The simplest network designed for sequence data is the RNN. It can be tricky to grasp at first but actually it isnt too bad. Take the network shown below. Here we have the simplest RNN possible, a single input neuron, a single hidden layer, also with one neuron and an output layer with a single neuron.
+
+Input          Hidden           Output
+O -------------- O -------------- O
+     w1,b1  ^    |      w3,b2
+            |<---|
+              w2
+
+Note the difference here from a standard feedforward neural net or MLP. Here we have this feedback loop in the single neuron in the hidden layer. Note that the feedback loop is specific to the neuron itself. If we had several neurons in the hidden layer the feedback loops are for each neuron. 
+
+Say we have a sequence of 4 numbers (y1, y2, y3, y4) and we wish to predict the fifth number (y5). For simplicity I'm going to call the hidden neuron h(subscript) where subscript is equal to the iteration.
+
+First iteration
+h1 = y1*w1 + b1
+
+Second Iteration (the entry in brackets is the neural feedback or state)
+h2 = y2*w1 + b1 + (h1*w2)
+
+Third Iteration
+h3 = y3*w1 + b1 + (h2*w2)
+
+Forth Iteration (we have no more inputs so we'll go to the output now)
+h4     = y4*w1 + b1 + (h3*w2)
+output = h4*w3 + b2
+
+
+Whilst simple, this is a powerful step forward for sequence prediction. Firstly, our sequence can be any length we wish it to be, therefore we can take advantage of making predictions on variable sequence lengths. We have also introduced the concept of memory. The model will take into account all data points, but by the time we have reached the latest points, the 'memory' of the earlier ones will have somewhat faded away (because they are 'mushed' into a single state brought forward which contains information on all the previous iterations or states). This could be seen both as a positive and negative feature of the model.
+
+Note that whilst we've removed the technical need for having the same sequence length, there is still a limitation. Say a model has been trained on sequences of 5-10 in length. If we suddenly tried to apply the model to a sequence of length 50 the model, whilst technically still be able to make a prediction, would likely perform poorly. 
+
+The RNN also has one additional fundamental flaw. Note that we can repeat our hidden layer many times, each time the state and inputs are different but the weights and biases are the same every time. Say we want to train our model and we provide an example where we have 20 data points.. not unreasonable. In order to run the backpropagation algorithm, we first need to 'unroll' our network. This is where we effectively list out all the transformations steps to go from our input of 20 data points to our output. If we have the simple model defined above, we unroll this 20 times where we'll apply a time subscript to the variables (state and inputs). We'll then run the backpropagation algorithm. Say we're evaluating the change in cost with respect to w2.
+
+dC
+--   =  (many partial differentials due to long input sequence)
+dw2
+
+In this we will have 20 partial differentials relating to the same w2. We can strip this back away from the calculus to make it easier to understand. Say w2=2. So every time we iterate over an entry in our sequence we'll be multiplying the hiden layer neuron by 2. This could get exponentially large where we have a long sequence. Alternatively if w2=0.5 then we'll get tiny numbers. The result is the exploding or vanishing gradient problem. Where w2 is 2, and we have a long sequence the answer is going to be so incorrect that the gradient or differential of cost with respect to the weight is going to be enormous. Therefore we'll make a gigantic jump and the next w2 could say be equal to -10. That will be even more incorrect and we'll jump to 50.. and so on. 
+
+
+----------------------------- LSTM NEURAL NETWORKS ----------------------------
+
+
 
 
 
