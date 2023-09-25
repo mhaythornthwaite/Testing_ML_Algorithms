@@ -323,9 +323,22 @@ This is covered in the concept sheet, however, in this I will quickly cover the 
 
 
 
------------------------ EXPLODING & VANISHING GRADIENT ------------------------
+------------------------------ WORD EMBEDDINGS --------------------------------
 
+This is all to do with converting words into numbers or commonly a vector of numbers. We could do this randomly, but we would prefer it if similar words had similar vectors because less training data will be needed, and the model will be more robust this way. This is because when a model learns how one word is used will help it to infer how similar words can be used, even if they weren’t in the training dataset.
 
+We can do this by using a simple neural network, which is what word2vec has done. This takes every word in the English language and has each one as an input neuron. The model has a single hidden layer, with the number of neurons equal to the vector length we want our word embedding to be. For example, if we wanted to have each word converted into a vector that is 512 numbers long, we would have 512 neurons in our hidden layer.
+
+We then connect our hidden layer back up to the output layer which represents every work in the English language (the same as the input layer).
+
+Ok so that’s our model architecture, but what is this model trying to predict. This can be one of a few things. 
+- Traditionally we would predict the next word in a sentence (all the input neurons would be 0 except for the selected word, and all the output neurons would be 0 except for the next word).
+- Continuous bag of words - where we take two surrounding words as input and try to predict the middle word (input had two 1s and output has a single 1).
+- Skip gram which is the opposite to continuous bag of words whereby we take one word and try to predict the surrounding words (single 1 in the input and two 1s in the output (or actually two 0.5s)). 
+
+Word2Vec is trained on all of Wikipedia. Consider that word pairs produce a training sample for the traditional approach and sets of 3 words produce a training sample for continuous bag of words and skip gram, we will have an enormous amount of training data.
+
+Ok so this model can predict the next word, but we were trying to do word embeddings, how does this help with that? Remember back to the hidden layer. It has x number of neurons equal to the desired word embedding length. Here each weight which stems from a single word input neuron to each hidden neuron is one value that makes up the word embedding vector. Therefore, we can extract these weights for each input and create a mapping table for each word to a vector.
 
 
 
