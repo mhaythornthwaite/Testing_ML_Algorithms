@@ -206,7 +206,7 @@ SUMMARY
 Note here that our LTM update is entirely influenced by our STM and input. Where as note our STM update is influenced by our input, previous STM and LTM. This is where the conveyor belt analogy is used. Our LTM is chugging along, picking up information from the input and STM along the way. Where as our STM (or Output Gate) is being influenced by everything, the input, previous STM and our LTM. So it's able to pick up information from our LTM as it wishes if it helps the model.
 -------
 
-The reason we remove the vanishing gradient problem is due to the way the forget gate and LTM conveyor belt. Imagine we have a STM that keeps getting smaller and smaller from a weight that is <1 in a traditional RNN. Well now at every unroll we have the ability to pull in LTM information meaning that our STM is less susceptible to be repeatedly reduced, it can be topped up with the LTM. Conversely, we can do the same where the weight > 1, our LTM can be used to chip down the STM to prevent exponential increases.
+The reason we remove the vanishing gradient problem is due to the forget gate and LTM conveyor belt. Imagine we have a STM that keeps getting smaller and smaller from a weight that is <1 in a traditional RNN. Well now at every unroll we have the ability to pull in LTM information meaning that our STM is less susceptible to be repeatedly reduced, it can be topped up with the LTM. Conversely, we can do the same where the weight > 1, our LTM can be used to chip down the STM to prevent exponential increases.
 
 
 
@@ -228,6 +228,64 @@ We start by passing into the first unrolled unit a special token called <EOS> (e
 
 Note that the output dense layer has to be very large. In the original paper, the output layer in the decoder had 80,000 neurons to match the size of the output vocabulary.
 
+------
+ISSUES
+Note here that we pass the entire sentence into the encoder layer before passing the context vector to the decoder layer. This is ok for short sentences, but for long sentences, that pass through many unrolled LSTM layers, we compress a lot of information into the context vector and often words at the start of the sentence can get lost. 
+
+
+
+------------------------- TRANSFORMER NEURAL NETWORKS -------------------------
+
+The transformer architecture is quite a sudden step change away from the RNNs and LSTMs that we've previously discussed. As we know RNNs can process sequence data of unspecified length through preserving the state of eah neuron, and repeating or 'unrolling' the network with the previous state until the end of the input sequence. LSTMs built on this, by renaming the state the 'short term memory' and adding in a second state called the 'long term memory'. This got around the issue of the exploding/vanishing gradient problem, but it still suffered from sub-optimal 'memory' of the initial part of a sequence. This was amplified when moving to encoder-decoder architectures based on LSTMs as a lot of information needed to be passed from the encoder to the decoder via a context vector. A new approach was needed. Enter the transformer.
+
+The transformer is built of 4 or 5 components:
+- Word Embeddings
+- Positional Encoding
+- Self Attention Unit or Multi Head Attention Unit
+- Residual Connection
+- Often Layer Normalisation, Dense Layers and Additional Residual Connections.
+
+Lets go through each of these.
+
+WORD EMBEDDINGS
+These are covered in detail in a section below so we will not go into detail. The transformation is very intuiative though. We take a word and transform it to a vector of numbers, typically hundreds or thousands of numbers long. The key here is that similar words have similar vectors and so a close together in word embedding space.
+
+POSITIONAL ENCODING
+The sequence of words is very important, the sequence alone can totally alter the meaning of a sentence. In previous models (LSTMs or RNNs), squence was inherited by the model architecture itself as we processed words in order. This is not the case with the transformer and so we add the position of the word in a given sentence to the word embedding vector. One common way is to have a set of alternating sin and cosine waves of descreasing frequence, one wave for each number in the word embedding vector. So say we have an embedding vector of 512 nummbers we will have 512 waves of decreasing frequency, one for each number. Here the y axis is the normal sin or cos range (so -1 to 1) and the x axis is the word position in the input sentence. We then add the positional encoding from each wave to the word embedding. It should be noted that the intial part of the vector (say the first 20) are heavily affected by the positional encoding. However, after that the waves become such low frequency that positional encoding on the word embedding begins to have little effect. You can think of this such that the first 20 or so values in the positionally encoded word embedding represent the position whereas the remaining values in the vector more represent the word itself.
+
+SELF ATTENTION UNIT
+The concept of self-attention alone is rather simple, it's only in its implementation that it begins to look confusing. I like to think of self-attention as applying gravity in word embedding space (or positionally encoded word embedding space). Words that are close together in space pull closer to each other whilst words that are far away remain far away. Take the sentence: "I listened to the radio station". Without self-attention the word "station" in this sentence has no idea 'its' a radio station. It is simply exists in word embedding space as the word station which could refer to any kind of station. After self-attention, the embedding vector for station will move closer to the vector for radio and vice-versa. Doing this is actually quite simple. We take the word "station" we calculate the similarity (using the dot product) between itself and every other word, including itself, run those similarities through a softmax function such that they sum to equal 1, multiply the ‘softmaxed’ similarities by each word vector, and then perform element wise sum of the vectors to produce the new vector for station. Note that if the word station is dissimilar to any other words, then putting the similarities through the softmax function will mean all the other word vectors get multiplied by 0 whereas station would get multiplied by 1 and remain the same.  
+
+This is where the notation of this transformation becomes more complex. In the situation above we calculate the self-attention of a single sentence e.g., how similar is each word in this sentence to the words in the same sentence. We can display this as follows:
+
+outputs = sum(inputs * pairwise_scores(inputs, inputs))
+
+But there's no reason why we have to compare each word in a sentence to the same sentence. We could compare each word in a sentence to a whole different sentence. This operation then becomes: "for each element in the query, compute how much the element is related to every key, and use these scores to weight a sum of values".
+
+outputs = sum(values * pairwise_scores(query, keys))
+
+Note that this notation came from image search engines, where we'd take a search term, find how similar it was to a set of keys (or tags on each image) and then use this to return the image where the key matched the query. In our reality of text, often the keys and the values will be the same. In machine translation, the query is the target sequence, and the source sequence would play the role of both the keys and the values. 
+
+MULTIHEAD ATTENTION UNIT
+This is actually quite straightforward and allows us to scale up our self-attention models. Rather than simply passing in the query, keys, and values into the self-attention calculation, we pass each one through a dense layer first. It’s this addition of a dense layer that is trainable that then moves this from a static standalone transformation to a trainable unit. And when we have a trainable unit, we can have more than one. See the unit below, note that rather than passing Q, K and V in directly we push them through a dense layer first.
+
+        Attention
+    Q      K       V
+  /        |         \
+Dense    Dense     Dense
+  ^        ^         ^
+  |        |         |
+Query     Key      Value
+
+So rather than having a single attention 'head' we can have many, often thousands which are concatenated together. Think of each head being a neuron making up a single attention layer.
+
+So now the concept of self-attention has somewhat changed. We've moved from the intuitive example of bringing word embeddings closer together in space, to then applying a dense layer transformation before doing this which could move the 'position' in space to somewhere completely different. 
+
+RESIDUAL CONNECTIONS
+These are very basic. Rather than simply taking the output from the self-attention unit forward, we add in the values from before the self-attention head. 
+
+ADDITONAL LAYERS
+Here we'll add a few normalisation layers in (which help gradients flow better during backpropagation), a few more dense layer transformations and residual connections, all of which is standard practice when designing complex models and adds additional processing potential to the model. Together stringing together all the components outlined above gives us our transformer architecture.
 
 
 --------------------------- CONCEPTS & DEFINITIONS ----------------------------
