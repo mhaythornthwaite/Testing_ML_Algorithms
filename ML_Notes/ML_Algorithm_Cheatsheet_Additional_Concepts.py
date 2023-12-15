@@ -285,7 +285,20 @@ standard dev = 2.54
 
 Note that the concept of variance or variability can also be applied to machine learning models. A model that performs significantly different on different datasets (e.g. training vs testing dataset) can be said to have high variance. 
 
-Bias is a phenomenon that skews the result of an algorithm in favour or against an idea. Bias is considered a systematic error that occurs in the machine learning model itself due to incorrect assumptions in the ML process. For example, assuming a set of inputs is linearly related to the target when it is not may produce bias. Say we use linear regression to fit a straight line to weight vs height. Here we may always predict the weight for a tall individual is too light because the true (hidden) function is not linear.
+
+Bias can be simply defined as a machinne learning models inability to represent the true relationship of the data. There are two common reasons for bias that can be split into the following:  
+- Incorrect model selection 
+- Missing or inaccurate data 
+ 
+Incorrect model select is relatively straightforward to understand. Say we have a 'true' ralationship that is polynomial, y = x^1.5 and we have some data that samples around this relationship with some error. If we select linear regression as our model then our model will never be able to aaccuraately depict the true relationship. The model will systematically underpredict y when x is small and vice versa.  
+ 
+The second main cause for bias is in the data selected and is more common and harder to combat. If we only sample part of the relationship then we will never be able to accurately depict the true relationship. A simple example of this is survey data. If you are trying to understand an entire population and use survey data to do this to model behavoir for example, then we have not necessarily captured the full population. If we did our survey online we missed an entire portion of the population that does not have access to the internet. There are many other possible issues relating to a subset of the population willing to partake in a survey (bias towards young or old, emplyment status etc.) 
+ 
+Imagine training an algorithm to predict whether or not someone has covid. In this we use age as a feature. Say we collect data at hospital wing specifically designed for the elderly with lung infections. A great deal of these patients may have covid. We then collect a second set of data at a workplace. Those in work are on average younger and because they are at work they are unlikely to have covid. Therefore, if we only used this data, the model would incorrectly learn that being older is an indication of having covid. This is because our dataset is incomplete and our data collection was heavily biased. 
+ 
+The second part of the possible issues with data is label inaccuracy. If labels are subjective, then it's possible for our our internal bias' can effect the labelling of the data.  
+ 
+All the above are reasons why we may not be able to accurately capture the true relationship of the data. Typically when thinking about bias we consider pii and models performing tasks that can affect protected characteristics e.g. sexism, agism, racism etc. (e.g., a facial recognition system can start to be racially discriminatory, or a credit application evaluation system can become gender-biased). This is likely because the data collected is imcomplete, or represent and mirror societal biases.
 
 
 
