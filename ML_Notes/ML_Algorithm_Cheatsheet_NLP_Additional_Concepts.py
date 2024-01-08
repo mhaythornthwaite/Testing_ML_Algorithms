@@ -5,6 +5,24 @@
 This sheet will cover concepts and techniques that are used in NLP. However, we won't go into some of the generic model architectures used in NLP as these will be covered in the deep learning cheatsheet. 
 
 
+------------------------------ Cosine Similarity ------------------------------
+
+The cosine similarity is a simple metric that can be used to calculate the similarity between two points in n dimensional space. Typically it is used in NLP to calculate the similarity between two words, phrases, sentences or documents. First though, the two objects we wish to compare need to be converted to vectors of equal length. This could be through word embeddings or a simple bag of words approach where we count the occurence of each word in the phrases.
+
+In two dimensions, cosine similarity is super simple, we simply take the cos(x) where x is the angle between the two vectors. In greater dimensions, this becomes more complicated and so we can use the following equation to calculate similairity.
+
+cosine similarity = sum(AB) / ( sum(A^2)^0.5 * sum(B^2)^o.5 )
+
+To provide an example, say we have the two points we wish to compare:
+A = (1, 0, 3)
+B = (0, 1, 4)
+
+cosine similarity = 0 + 0 + 12 / (10^0.5 * 17^0.5)
+                  = 12         / (3.16   * 4.12)
+                  = 0.92
+
+
+
 ---------------------------------- TF-IDF -------------------------------------
 
 TF-IDF stands for term frequency - inverse document frequency. This sounds complicated but the objective is relatively straightforward. 
@@ -47,6 +65,7 @@ w = tf * log(1 + 3)
 If a word is not mentioned frequently in other documents and f is small, we might get something like the following:
 
 w = tf * log(1 + 50)
+
 
 
 ----------------------------------- BERTopic ----------------------------------
