@@ -68,7 +68,7 @@ Note if we continue indefinitely we will end up with a single cluster. As each i
 
 ----------------------------------- DBSCAN ------------------------------------
 
-This is a density-based approach to clustering and is surprisingly simple. There are two variables we need to assign when running this algorithm. Both are related to the concept of core points. These are: overlap number and distance. 
+This is a density-based approach to clustering and is surprisingly simple. There are two variables we need to assign when running this algorithm. Both are related to the concept of core points. These are: overlap number and distance (epsilon). 
 
 Say we assign the overlap number to 4. We then go over every
 sample in the dataset and check to see if that sample is close to 4 other samples (the closeness is defined by the overlap distance). If there are more than 4 samples close to any given sample, it is defined as a core point.
@@ -78,6 +78,18 @@ Once we have our list of core points, we randomly select a core point to begin g
 Note that any points that are not core points will be included in the cluster, but no growth will continue from those points. Once we have exhausted all the core points the process is complete and we begin the process again with one of the remaining core points not assigned to the first cluster.
 
 It should be noted that this is a stochastic algorithm because the selection of initial core points is random. This is important because a non-core point could fringe multiple clusters and therefore whichever cluster forms first will collect this non-core point.
+
+
+
+----------------------------------- HDBSCAN -----------------------------------
+
+This is built on the principles of DBSCAN with a few small additions. In DBSCAN one of our parameters is epsilon. This is the radius distance around each point is drawn to test whether it is a 'dense' point or a 'sparse' point (or as I describe it above a 'core' point). 
+
+HDBSCAN on the other hand runs DBSCAN for all possible values of epsilon. Therefore, when epsilon is large, we may get one or two large clusters and when epsilon is small, we may get many clusters with only a few points in. To prevent getting many clusters which are small, we can set the variable min_cluster_size to a larger number. This prevents cluster being smaller than this value.
+
+We then go through an optimisation process that picks out the clusters that gives us the greatest number of classified or clustered points. Note that we do not have to pick a specific value of epsilon. We can look at all the clusters in all values of epsilon and select the most optimal set of clusters from the differing values of epsilon. Obviously, this is not straightforward. If we pick clusters from differing epsilons, some points may belong to multiple clusters which is not allowed. This is a poorly documented area of the algorithm, many docs simply state that HDBSCAN performs DBSCAN over varying epsilon values and integrates the result to find a clustering that gives the best stability over epsilon.
+
+Doing some further reading it would seem stability is determined based on the persistence of clusters across different density levels. High-persistence clusters are considered stable and represent meaningful structures in the data, while low-persistence clusters are more likely to be noise.
 
 
 '''
