@@ -125,6 +125,14 @@ t-SNE can be used for both dimensionality reduction and clustering.
 
 
 
+------------------------------------ UMAP -------------------------------------
+
+UMAP operates in a very similar way to t-sne, in that it projects the data down to lower dimensions, with the objective function being set to the difference in similarity between the high and low dimensional projection. t-sne uses a gaussian objective function whereas umap does not. 
+
+The main difference that is important to know is that UMAP is said to preserve both the local and global structures of the dataset, whereas t-sne only preserves the local structure. To explain this, consider we have three clusters of data in n-dimensional space. t-sne will hope to successfully preserve these three clusters in reduced dimensions, but the distance between the clusters will not be preserved. Local structure refers to the points within a cluster, whereas global refers to the relationship between clusters. UMAP on the other hand hopes to preserve both the local clusters and the distance and relationships of the clusters themselves.
+
+
+
 ------------------------------- FEATURE SCALING -------------------------------
 
 We have two options to scale our data, and a few reasons to do it.
