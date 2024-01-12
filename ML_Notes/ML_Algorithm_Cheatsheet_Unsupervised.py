@@ -92,5 +92,98 @@ We then go through an optimisation process that picks out the clusters that give
 Doing some further reading it would seem stability is determined based on the persistence of clusters across different density levels. High-persistence clusters are considered stable and represent meaningful structures in the data, while low-persistence clusters are more likely to be noise.
 
 
-'''
 
+------------------------------ EVALUATION METRICS -----------------------------
+
+Often evaluation of an unsupervised model is done in a qualitative way. The model is run and clusters are observed using cross-plots or radar charts and evaluated against the objectives of the study. Whilst this is an important step (where possible) it’s also important to consider quantitative metrics which can be used to understand the form of the clusters without direct visualisation. 
+
+Many of the metrics I will outline below may be conflicting. To improve one metric will mean to worsen another. This is ok, the key to finding use in the metrics is through understand which metrics are important for your given objective/use case. To provide a single example, consider we wish to cluster some social network data to understand groups of individuals. In this scenario, we might not want any large within-cluster gaps, this would suggest we are grouping multiple clusters together. 
+
+In reality, it is often difficult to have a clear view of which metric is the most important. Rather the metrics can be studied at least to understand what is being favoured in different approaches. For example, say model A produces good within cluster homogeneity but centroid distance is low, whereas model B has poor homogeneity, but centroid distance is higher. Therefore, we now know model A may have some clusters which are quite similar as the centroid distance is low, whereas model B has samples clustered together which are quite dissimilar. Depending on our use case, one or the other may be more preferable. The meaning in real terms can then be explained to the business and a more informed choice can be made.
+
+
+----- General Distance Metrics -----
+
+I don’t believe any of the below are implemented directly in sklearn, but they're a good intro into the type of analysis that can be done comparing cluster separation.
+
+Centroid Distance
+For each cluster, find the nearest cluster and find the centroid distance. Average over all clusters.
+
+Minimum Distance
+For each cluster, find the nearest cluster and find the shortest distance between each point. Average over all clusters.
+
+Hybrid (p-separation index)
+For each cluster, find the nearest cluster. Then find the nearest 10% of points, these are the 'border points'. We can then compare these two sets of border points for a more stable/robust minimum distance estimation.
+
+
+----- Davies-Bouldin Index (Sklean Implementation) -----
+
+The lower the index of this metric, the better the separation between clusters. This divides the average within cluster distance of two clusters, by the distance of the centroid of the two cluster. Therefore, it takes into account the cluster size as well as the distance, making it a similar, but arguably improved version of the simple centroid distance metric.
+
+
+----- Silhouette Coefficient (Sklearn Implementation) -----
+
+This coefficient compares the mean distance between a sample and all other points in the came class, against the sample and all other points in the nearest different class. For a single sample it is defined as
+
+s = b - a / max(a,b)
+
+a: The mean distance between a sample and all other points in the same class.
+b: The mean distance between a sample and all other points in the next nearest cluster.
+
+Realistically the value will vary from 0 to 1 where 1 is optimal. This is for a single point, the algorithm is run for every point in the dataset and averaged.
+
+Generally, this metric is fairly similar to the Davies Bouldin Index and can be useful as a general measure of clustering performance which takes into account both the density and distance of clusters.
+
+
+----- DENSITY BASED CLUSTER VALIDATION (DBCV) -----
+
+The silhouette and Davies-Bouldin Index work very well on globular clusters, but can fail on non-globular clusters (imagine a wavy string of data in 2D). 
+
+In essence, DBCV computes two values:
+- The density within a cluster
+- The density between clusters
+
+High density within a cluster, and low density between clusters indicates good clustering assignments.
+
+
+----- Within Cluster Largest Gap -----
+
+This doesn’t have an sklearn implementation but it's an interesting and useful metric which is a little different to the more standard centroid density and distance metrics.
+
+Effectively we're calculating the largest gap between two points within a cluster. To calculate this, we simply iterate over each point in a cluster, find the nearest point to that point, and then calculate the distance. After going over every point, the largest value here is the largest within cluster gap.
+
+
+----- PLOTS -----
+
+Part of model evaluation is in the selection of number of clusters. For this we can produce plots which show a variable number of clusters on the x axis, along with an evaluation metric on the y axis. A typical approach is the elbow plot, whereby SSE is plotted on the y axis. SSE is the sum of the squared distances of all samples from the centroid of their clusters, therefore as we increase the number of clusters, our SSE is always going to decrease (to the point where SEE = 0 where #clusters = #samples). Often, we see an 'elbow' in this plot, where we begin to see diminishing 'returns' on the SSE for increasing #clusters. 
+
+Two other approaches I've seen is plotting the Silhouette coeff and 
+Davies-Bouldin Index on the y axis to accompany the elbow plot. This helps to understand the impact #clusters has on the quality of the clusters.
+
+Finally, I've seen a Silhouette plot utilised. The Silhouette coeff is calculated for every point in the dataset and commonly averaged to produce a single metric. The plot displays the silhouette coefficient for each sample on a per-cluster basis, visualizing which clusters are dense and which are not. This is particularly useful for determining cluster imbalance, or for selecting a value for #clusters by comparing multiple visualizers.
+
+
+---------- TRUE LABEL METRICS ----------
+
+Not mentioned above is calculating metrics where 'true' labels are known. There are many metrics we can use when we have some of these data points such as the 'Rand Index',  AMI, homogeneity (clusters only have known points pertaining to a single class) etc. I won't go into these inn detail as this is a rare occurrence, and if we have enough known points our model can turn from unsupervised to supervised. However, it's useful to know they exist. Please refer to sklearn docs under clustering performance evaluation to go into more detail.
+
+
+#---------- ADDITIONAL INFO ----------
+
+https://scikit-learn.org/stable/modules/clustering.html#clustering-performance-evaluation
+
+https://www.scikit-yb.org/en/latest/api/cluster/silhouette.html
+
+https://github.com/christopherjenness/DBCV
+
+https://www.datanovia.com/en/lessons/cluster-validation-statistics-must-know-methods/
+
+https://github.com/geodra/Articles/blob/master/Davies-Bouldin%20Index%20vs%20Silhouette%20Analysis%20vs%20Elbow%20Method%20Selecting%20the%20optimal%20number%20of%20clusters%20for%20KMeans%20clustering.ipynb
+
+
+
+
+
+
+
+'''
