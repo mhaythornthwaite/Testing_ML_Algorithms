@@ -5,13 +5,23 @@
 This sheet will cover the high level concepts behind numerous supervised machine learning algorithms.
 
 
+---------------------------------- SUMMARY ------------------------------------
 
----------------------------- K NEAREST NEIGHBORS -----------------------------
+Decision Tree
+Creates a single tree, the tree is formed of a single root node, several internal nodes and several leaf nodes. Nodes are formed through minimising impurity: gini is the most popular, effectively a fancy accuracy metric.
+
+Random Forest
+Creates several trees, but this time with a bootstrapped dataset (a random subset of the data is selected each time). Training each tree can be done in parallel. Bagging is the term used to describe the set of models trained with a boostrapped dataset.
+
+Gradient Boost
+Similar to random forest, but this time training is done in sequence. When we train our first model, the second model is rewarded more for correctly predicting the samples incorrectly predicted by the first. Often formed of weak learners (shallow trees).
+
+
+---------------------------- K NEAREST NEIGHBORS ------------------------------
 
 A deterministic algorithm, k nearest neighbors classifies a point through the classification of neighboring points. If K=1 then we only use the nearest neighbor to define the category. If k=10 then we search for the nearest 10 points. The category that appears the most in this 10 wins. Therefore, it is a good idea to set k=odd number therefore avoiding potential ties.
 
 It is also important to set k lower that the number of data points within a specific class. 
-
 
 
 ------------------------------- DECISION TREES --------------------------------
