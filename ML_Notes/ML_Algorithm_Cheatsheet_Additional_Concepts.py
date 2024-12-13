@@ -166,6 +166,14 @@ Very commonly used, it plots predicted labels against observed labels in heatmap
 
 ----- ROC CURVE -----
 
+This is a powerful evaluation tool, and can be visualised using an ROC curve, or evaluated quantitativley using the AUC or area under curve. Lets discuss the ROC curve first.
+
+On the y axis we have TPR or sensitivity (of the samples that are actually positive, what proportion do we correctly predict) and on the x axis we have FPR or 1 - specificity (of the samples that are negative, what proportion do we incorreclty predict). Using these two metrics, we cover all 4 quadrants of the confusion matrix. A ROC curve then manages to easily display the effect on TPR and TNR when we use different classification thresholds, rather than simply setting this at 50%. 
+
+We formulate aa ROC curve by starting at setting the threshold at 0%. Here everything is predicted as positive such that our TPR is 1 (all samples that are actually positive are classified as positive), and our FPR is also 1 (all samples that are actually negative are classified as positive). This is plotted as a dot on graph at (1, 1). We then gradually increase the prediction threshold until we observe a change in either the TPR or FPR. When we do, we plot a second dot on the graph, and continue until we have reached a threshold of 100%. The evaluation of TPR and FPR will change evertime a samples classification changes due to the changing classification threshold. Therefore, we will likely have dots plotted on the graph, roughly equal to the number of training samplles we have. Note that we may have less, as two training samples may have identical features and behave the same.
+
+AUC is therefore a simple calculation where we evaluate the area under this ROC curve. It's a useful evaluation metric that can tell us how sensitive our model might be to chnages in classification thresholds. Models with higher AUCs are likely to be more stable. 
+
 ----- PRECISION, RECALL, F1 -----
 
 The first metric is accuracy, defined as simply the #correct predictions / #all predictions. This is commonly used with cross-validation to prevent an anomalous test batch which is not representative of the full dataset. This is possible as typically only ~20% of the data is used for the test batch. 
@@ -219,6 +227,7 @@ Variance, MSE, R^2
 
 Further reading:
 https://www.jeremyjordan.me/evaluating-a-machine-learning-model/#:~:text=The%20three%20main%20metrics%20used,the%20number%20of%20total%20predictions.
+https://learn.microsoft.com/en-us/azure/machine-learning/how-to-understand-automated-ml?view=azureml-api-2
 
 ------------------------------ GRADIENT DESCENT -------------------------------
 
