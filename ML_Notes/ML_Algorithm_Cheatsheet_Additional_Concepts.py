@@ -174,6 +174,12 @@ We formulate aa ROC curve by starting at setting the threshold at 0%. Here every
 
 AUC is therefore a simple calculation where we evaluate the area under this ROC curve. It's a useful evaluation metric that can tell us how sensitive our model might be to chnages in classification thresholds. Models with higher AUCs are likely to be more stable. 
 
+----- PRECISION-RECALL CURVE -----
+
+This is a similar to the ROC curve but instead of looking at sensitivity and specificity, we instead look at sensitivity/recall and precision. This means that we only use 3 out of the 4 quadrants of the confusion matrix, entirely ignoring true negatives. It can be useful when we're not bothered about the true negatives, or where we have a good amount of class imbalance (far more negatives than positives). This is because a PR curve focusses on the ability of the model to correctly predict the positive cases. 
+
+PR curves are built in just the same way as with ROC curves, where we vary the prediction threshold and plot the results. Where the prediction threshold is high, our model will likely have high precision (all the positive predictions will be right) but low recall (we'll have a high false negative count becuase we'll miss a lot of actual positives). Conversely, when our threshold is set to be low, our precision will likely be low too (we'll introduce a lot of false positives), but our recall will be high (we predict so many positives that we likely won't miss many actual positives).
+
 ----- PRECISION, RECALL, F1 -----
 
 The first metric is accuracy, defined as simply the #correct predictions / #all predictions. This is commonly used with cross-validation to prevent an anomalous test batch which is not representative of the full dataset. This is possible as typically only ~20% of the data is used for the test batch. 
